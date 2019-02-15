@@ -91,9 +91,10 @@ namespace Scrap_Threats
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+
             if (a == null)
             {
-                a = new Worker(new Vector2(200), "test", gameTime);
+                a = new Worker(new Vector2(200), "test");
             }
             //a.Update(gameTime);
 
