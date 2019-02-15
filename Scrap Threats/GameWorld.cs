@@ -12,8 +12,7 @@ namespace Scrap_Threats
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-
-        //et eller andet
+        Texture2D background;
 
         private static ContentManager content;
         public static ContentManager ContentManager
@@ -29,6 +28,21 @@ namespace Scrap_Threats
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             content = Content;
+            //Sets the window size
+            graphics.PreferredBackBufferWidth = 1920;
+            graphics.PreferredBackBufferHeight = 1080;
+            graphics.ApplyChanges();
+        }
+
+        /// <summary>
+        /// Creates a rectangle whithin the bounds of the window
+        /// </summary>
+        public Rectangle ScreenSize
+        {
+            get
+            {
+                return graphics.GraphicsDevice.Viewport.Bounds;
+            }
         }
 
         /// <summary>
@@ -40,7 +54,7 @@ namespace Scrap_Threats
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            this.IsMouseVisible = true;
             base.Initialize();
         }
 
@@ -53,6 +67,7 @@ namespace Scrap_Threats
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            background = Content.Load<Texture2D>("background");
             // TODO: use this.Content to load your game content here
         }
 
@@ -88,7 +103,7 @@ namespace Scrap_Threats
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
-
+            spriteBatch.Draw(background, ScreenSize, Color.White);
 
             // TODO: Add your drawing code here
 
