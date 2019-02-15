@@ -11,7 +11,7 @@ namespace Scrap_Threats
     class GameObject
     {
         /// <summary>
-        /// these are lovely fields
+        /// these are lovely fields (ser lige om min nye email adresse ikke har fucket det op)
         /// </summary>
         protected Texture2D sprite;
         protected Vector2 position;
