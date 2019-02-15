@@ -14,6 +14,7 @@ namespace Scrap_Threats
         SpriteBatch spriteBatch;
         Texture2D background;
         Worker a;
+        static public GameTime staticGameTime;
 
         private static ContentManager content;
         public static ContentManager ContentManager
@@ -91,7 +92,7 @@ namespace Scrap_Threats
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-
+            staticGameTime = gameTime;
             if (a == null)
             {
                 a = new Worker(new Vector2(200), "test");
