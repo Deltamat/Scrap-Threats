@@ -13,6 +13,8 @@ namespace Scrap_Threats
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        //et eller andet
+
         private static ContentManager content;
         public static ContentManager ContentManager
         {
