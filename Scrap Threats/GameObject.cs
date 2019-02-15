@@ -10,6 +10,9 @@ namespace Scrap_Threats
 {
     class GameObject
     {
+        /// <summary>
+        /// these are lovely fields
+        /// </summary>
         protected Texture2D sprite;
         protected Vector2 position;
         public Vector2 Position { get => position; set => position = value; }
