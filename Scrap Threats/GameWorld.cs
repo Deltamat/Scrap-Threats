@@ -12,6 +12,7 @@ namespace Scrap_Threats
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        Worker a;
 
         //et eller andet
 
@@ -40,7 +41,7 @@ namespace Scrap_Threats
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            IsMouseVisible = true;
             base.Initialize();
         }
 
@@ -52,6 +53,8 @@ namespace Scrap_Threats
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            
 
             // TODO: use this.Content to load your game content here
         }
@@ -75,6 +78,14 @@ namespace Scrap_Threats
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            if (a == null)
+            {
+                a = new Worker(new Vector2(200), "test", gameTime);
+            }
+            //a.Update(gameTime);
+
+
+
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -89,7 +100,7 @@ namespace Scrap_Threats
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
 
-
+            a.Draw(spriteBatch);
             // TODO: Add your drawing code here
 
             spriteBatch.End();
