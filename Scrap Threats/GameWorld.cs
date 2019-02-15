@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -12,10 +13,20 @@ namespace Scrap_Threats
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        private static ContentManager content;
+        public static ContentManager ContentManager
+        {
+            get
+            {
+                return content;
+            }
+        }
+
         public GameWorld()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            content = Content;
         }
 
         /// <summary>
@@ -74,9 +85,12 @@ namespace Scrap_Threats
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            spriteBatch.Begin();
+
 
             // TODO: Add your drawing code here
 
+            spriteBatch.End();
             base.Draw(gameTime);
         }
     }
