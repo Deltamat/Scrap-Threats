@@ -5,6 +5,9 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Windows.Forms;
+using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
+using Keys = Microsoft.Xna.Framework.Input.Keys;
 
 namespace Scrap_Threats
 {
@@ -16,9 +19,10 @@ namespace Scrap_Threats
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Texture2D background;
-        List<Worker> ActiveWorkers = new List<Worker>();
-        Worker a;
+        List<Worker> activeWorkers = new List<Worker>();
+        List<Building> buildings = new List<Building>();
         Thread t;
+        Building stockpile;
         Random rng = new Random();
         public static Rectangle mouseClickRectangle;
         public static HashSet<GameObject> gameObjects = new HashSet<GameObject>();
@@ -38,10 +42,9 @@ namespace Scrap_Threats
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             content = Content;
-            //Sets the window size
-            graphics.PreferredBackBufferWidth = 1920;
-            graphics.PreferredBackBufferHeight = 1080;
-            graphics.ApplyChanges();
+            //Maximises
+            var form = (Form)Form.FromHandle(Window.Handle);
+            form.WindowState = FormWindowState.Maximized;
         }
 
         /// <summary>
@@ -62,13 +65,15 @@ namespace Scrap_Threats
         /// and initialize them as well.
         /// </summary>
         protected override void Initialize()
-        {
-            // TODO: Add your initialization logic here
+        {            
             IsMouseVisible = true;
             for (int i = 0; i < 10; i++)
             {
-                ActiveWorkers.Add(new Worker(new Vector2(rng.Next(100,1800), rng.Next(100,900)), "test"));
+                activeWorkers.Add(new Worker(new Vector2(rng.Next(100,1800), rng.Next(100,900)), "test"));
             }
+           
+            stockpile = new Building(new Vector2(960, 540), "stockpile_empty");
+            buildings.Add(stockpile);
 
             GameTime gameTime = new GameTime();
             t = new Thread(() => UpdateWorkers(gameTime));
@@ -88,8 +93,7 @@ namespace Scrap_Threats
             spriteBatch = new SpriteBatch(GraphicsDevice);
             a = new Worker(new Vector2(200), "test");
 
-            background = Content.Load<Texture2D>("background");
-            // TODO: use this.Content to load your game content here
+            background = Content.Load<Texture2D>("background");            
         }
 
         /// <summary>
@@ -98,7 +102,7 @@ namespace Scrap_Threats
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            
         }
 
         /// <summary>
@@ -175,7 +179,12 @@ namespace Scrap_Threats
             spriteBatch.Begin();
             spriteBatch.Draw(background, ScreenSize, Color.White);
 
-            foreach (Worker worker in ActiveWorkers)
+            foreach (Building building in buildings)
+            {
+                building.Draw(spriteBatch);
+            }
+
+            foreach (Worker worker in activeWorkers)
             {
                 worker.Draw(spriteBatch);
             }
@@ -193,7 +202,7 @@ namespace Scrap_Threats
         {
             while (true)
             {
-                foreach (Worker worker in ActiveWorkers)
+                foreach (Worker worker in activeWorkers)
                 {
                     worker.Update(gameTime);
                 }
