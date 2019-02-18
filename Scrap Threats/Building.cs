@@ -12,7 +12,6 @@ namespace Scrap_Threats
     {
         public Building(Vector2 position, string spriteName) : base(position, spriteName)
         {
-        }
-        
+        }        
     }
 }

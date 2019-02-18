@@ -16,6 +16,7 @@ namespace Scrap_Threats
     /// </summary>
     public class GameWorld : Game
     {
+        public static double elapsedTime;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Texture2D background;
@@ -27,7 +28,7 @@ namespace Scrap_Threats
         public static Rectangle mouseClickRectangle;
         public static HashSet<GameObject> gameObjects = new HashSet<GameObject>();
         public static GameObject selectedUnit;
-        public static double elapsedTime;
+        
 
         private static ContentManager content;
         public static ContentManager ContentManager
@@ -109,6 +110,7 @@ namespace Scrap_Threats
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            elapsedTime = gameTime.ElapsedGameTime.TotalMilliseconds;
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
@@ -133,7 +135,7 @@ namespace Scrap_Threats
                 {
                     selectedUnit = go;
                 }
-                
+
                 foreach (GameObject other in gameObjects)
                 {
                     if (go != other && go.IsColliding(other))
