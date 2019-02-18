@@ -22,7 +22,7 @@ namespace Scrap_Threats
         List<Worker> activeWorkers = new List<Worker>();
         List<Building> buildings = new List<Building>();
         Thread t;
-        Building stockpile;
+        public static Building stockpile;
         Random rng = new Random();
         public static Rectangle mouseClickRectangle;
         public static HashSet<GameObject> gameObjects = new HashSet<GameObject>();
@@ -91,7 +91,6 @@ namespace Scrap_Threats
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            a = new Worker(new Vector2(200), "test");
 
             background = Content.Load<Texture2D>("background");            
         }
@@ -126,6 +125,7 @@ namespace Scrap_Threats
                 if (selectedUnit != null)
                 {
                     selectedUnit.waypoint = new Vector2(Mouse.GetState().Position.X, Mouse.GetState().Position.Y);
+                    selectedUnit.waypointRectangle = new Rectangle((int)selectedUnit.waypoint.X, (int)selectedUnit.waypoint.Y, 1, 1);
                 }
             }
 
@@ -146,21 +146,13 @@ namespace Scrap_Threats
                 }
             }
 
-            foreach (Worker item in ActiveWorkers)
+            foreach (Worker item in activeWorkers)
             {
                 if (item.CollisionBox.Intersects(mouseClickRectangle))
                 {
                     selectedUnit = item;
                 }
             }
-
-            if (a == null)
-            {
-                gameObjects.Add(a = new Worker(new Vector2(200), "test"));
-                gameObjects.Add(new Worker(new Vector2(400), "test"));
-                gameObjects.Add(new Worker(new Vector2(300), "test"));
-            }
-            //a.Update(gameTime);
 
 
 
@@ -192,7 +184,6 @@ namespace Scrap_Threats
             {
                 item.Draw(spriteBatch);
             }
-            // TODO: Add your drawing code here
 
             spriteBatch.End();
             base.Draw(gameTime);

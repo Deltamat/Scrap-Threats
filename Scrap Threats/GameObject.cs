@@ -15,7 +15,10 @@ namespace Scrap_Threats
         protected float rotation;
         public Texture2D Sprite { get => sprite; set => sprite = value; }
         public Vector2 Position { get => position; set => position = value; }
+
+        // movement fields, skal nok flyttes senere
         public Vector2 waypoint;
+        public Rectangle waypointRectangle;
 
 
         public GameObject(Vector2 position, string spriteName)

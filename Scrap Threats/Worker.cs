@@ -16,14 +16,6 @@ namespace Scrap_Threats
         double elapsedTime;
         Random rng = new Random();
 
-        public Worker(Vector2 position, string spriteName, GameTime gameTime) : base(position, spriteName)
-        {
-            //Thread workerThread = new Thread(WorkerUpdate);
-            //workerThread.Start();
-            //workerThread.IsBackground = true;
-
-        }
-
         public Worker(Vector2 position, string spriteName) : base(position, spriteName)
         {
             waypoint = position;
@@ -60,6 +52,12 @@ namespace Scrap_Threats
                 direction.Normalize();
                 position += direction;
             }
+
+            // lav om så den kun tjekker når rectanglen bliver sat, ved brug af events måske.
+            if (waypointRectangle.Intersects(GameWorld.stockpile.CollisionBox))
+            {
+                // indsæt kode/event der skal køre ressurseindsamling
+            }
             Thread.Sleep(1);
         }
 
@@ -79,13 +77,22 @@ namespace Scrap_Threats
         {
             while (position.X < 1000)
             {
-                Vector2 direction = waypoint - position;
-                direction.Normalize();
-                position += direction;
-                Thread.Sleep(5);
-                if (Vector2.Distance(waypoint, position) < 1)
+                if (true)
                 {
-                    position = waypoint;
+                    Vector2 direction = waypoint - position;
+                    direction.Normalize();
+                    position += direction;
+                    Thread.Sleep(5);
+                    if (Vector2.Distance(waypoint, position) < 1)
+                    {
+                        position = waypoint;
+                    }
+                }
+
+
+                if (waypointRectangle.Intersects(GameWorld.stockpile.CollisionBox))
+                {
+                    position = new Vector2(1000);
                 }
             }
         }
