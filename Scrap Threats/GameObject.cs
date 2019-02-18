@@ -8,13 +8,15 @@ using System.Threading.Tasks;
 
 namespace Scrap_Threats
 {
-    class GameObject
+    public class GameObject
     {
         protected Texture2D sprite;
         protected Vector2 position;
         protected float rotation;
         public Texture2D Sprite { get => sprite; set => sprite = value; }
         public Vector2 Position { get => position; set => position = value; }
+        public Vector2 waypoint;
+
 
         public GameObject(Vector2 position, string spriteName)
         {

@@ -42,12 +42,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Building.cs" />
+    <Compile Include="Farm.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="GameWorld.cs" />
     <Compile Include="Guard.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Raider.cs" />
+    <Compile Include="Scrapyard.cs" />
+    <Compile Include="Stockpile.cs" />
     <Compile Include="Unit.cs" />
     <Compile Include="Worker.cs" />
   </ItemGroup>

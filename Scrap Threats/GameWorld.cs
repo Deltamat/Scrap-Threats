@@ -24,6 +24,9 @@ namespace Scrap_Threats
         Thread t;
         Building stockpile;
         Random rng = new Random();
+        public static Rectangle mouseClickRectangle;
+        public static HashSet<GameObject> gameObjects = new HashSet<GameObject>();
+        public static GameObject selectedUnit;
 
         private static ContentManager content;
         public static ContentManager ContentManager
@@ -88,6 +91,7 @@ namespace Scrap_Threats
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            a = new Worker(new Vector2(200), "test");
 
             background = Content.Load<Texture2D>("background");            
         }
@@ -110,7 +114,58 @@ namespace Scrap_Threats
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-                       
+
+            if (Mouse.GetState().LeftButton is ButtonState.Pressed)
+            {
+                mouseClickRectangle = new Rectangle(Mouse.GetState().Position.X, Mouse.GetState().Position.Y, 1, 1);
+                selectedUnit = null;
+            }
+
+            if (Mouse.GetState().RightButton is ButtonState.Pressed)
+            {
+                if (selectedUnit != null)
+                {
+                    selectedUnit.waypoint = new Vector2(Mouse.GetState().Position.X, Mouse.GetState().Position.Y);
+                }
+            }
+
+            foreach (GameObject go in gameObjects)
+            {
+                //go.Update(gameTime);
+                if (go.CollisionBox.Intersects(mouseClickRectangle) && go is Worker)
+                {
+                    selectedUnit = go;
+                }
+                
+                foreach (GameObject other in gameObjects)
+                {
+                    if (go != other && go.IsColliding(other))
+                    {
+                        go.DoCollision(other);
+                    }
+                }
+            }
+
+            foreach (Worker item in ActiveWorkers)
+            {
+                if (item.CollisionBox.Intersects(mouseClickRectangle))
+                {
+                    selectedUnit = item;
+                }
+            }
+
+            if (a == null)
+            {
+                gameObjects.Add(a = new Worker(new Vector2(200), "test"));
+                gameObjects.Add(new Worker(new Vector2(400), "test"));
+                gameObjects.Add(new Worker(new Vector2(300), "test"));
+            }
+            //a.Update(gameTime);
+
+
+
+            // TODO: Add your update logic here
+            mouseClickRectangle = new Rectangle(-8888, -9999, 1, 1);
             base.Update(gameTime);
         }
 
@@ -132,7 +187,12 @@ namespace Scrap_Threats
             foreach (Worker worker in activeWorkers)
             {
                 worker.Draw(spriteBatch);
-            }            
+            }
+            foreach (GameObject item in gameObjects)
+            {
+                item.Draw(spriteBatch);
+            }
+            // TODO: Add your drawing code here
 
             spriteBatch.End();
             base.Draw(gameTime);
