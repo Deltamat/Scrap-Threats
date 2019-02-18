@@ -12,8 +12,6 @@ namespace Scrap_Threats
     class Worker : Unit
     {
         delegate void UpdateDelegate(GameTime gameTime);
-        bool goingLeft = false;
-        double elapsedTime;
         Random rng = new Random();
 
         public Worker(Vector2 position, string spriteName, GameTime gameTime) : base(position, spriteName)
@@ -23,41 +21,30 @@ namespace Scrap_Threats
 
         public Worker(Vector2 position, string spriteName) : base(position, spriteName)
         {
+            alive = true;
+            GameTime gameTime = new GameTime();
             waypoint = position;
+            Thread t = new Thread(() => Update(gameTime));
+            t.IsBackground = true;
+            t.Start();
         }
 
         public override void Update(GameTime gameTime)
-        {
-            //elapsedTime += gameTime.ElapsedGameTime.TotalSeconds;
-            //if (goingLeft == true)
-            //{
-            //    position.X -= 10;
-            //}
-            //else
-            //{
-            //    position.X += 10;
-            //}
-
-            //if (position.X >= 1920)
-            //{
-            //    goingLeft = true;
-            //}
-            //else if (position.X <= 0)
-            //{
-            //    goingLeft = false;
-            //}
-            
-            if (Vector2.Distance(waypoint, position) < 1)
-            {
-                position = waypoint;
-            }
-            else
-            {
-                Vector2 direction = waypoint - position;
-                direction.Normalize();
-                position += direction;
-            }
-            Thread.Sleep(1);
+        {            
+            while (alive == true)
+            {               
+                if (Vector2.Distance(waypoint, position) < 2)
+                {
+                    position = waypoint;
+                }
+                else
+                {
+                    Vector2 direction = waypoint - position;
+                    direction.Normalize();
+                    position += direction * 50f* (float)GameWorld.elapsedTime;
+                }
+                Thread.Sleep(1);
+            }                        
         }
 
         public override void Draw(SpriteBatch spriteBatch)

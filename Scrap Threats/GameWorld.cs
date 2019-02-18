@@ -22,11 +22,13 @@ namespace Scrap_Threats
         List<Worker> activeWorkers = new List<Worker>();
         List<Building> buildings = new List<Building>();
         Thread t;
+        Worker worker;
         Building stockpile;
         Random rng = new Random();
         public static Rectangle mouseClickRectangle;
         public static HashSet<GameObject> gameObjects = new HashSet<GameObject>();
         public static GameObject selectedUnit;
+        public static double elapsedTime;
 
         private static ContentManager content;
         public static ContentManager ContentManager
@@ -65,20 +67,17 @@ namespace Scrap_Threats
         /// and initialize them as well.
         /// </summary>
         protected override void Initialize()
-        {            
+        {
+            GameTime gameTime = new GameTime();
             IsMouseVisible = true;
             for (int i = 0; i < 10; i++)
             {
-                activeWorkers.Add(new Worker(new Vector2(rng.Next(100,1800), rng.Next(100,900)), "test"));
+                worker = new Worker(new Vector2(rng.Next(100, 1800), rng.Next(100, 900)), "test");
+                activeWorkers.Add(worker);
             }
            
             stockpile = new Building(new Vector2(960, 540), "stockpile_empty");
             buildings.Add(stockpile);
-
-            GameTime gameTime = new GameTime();
-            t = new Thread(() => UpdateWorkers(gameTime));
-            t.IsBackground = true;
-            t.Start();
 
             base.Initialize();
         }
@@ -152,7 +151,8 @@ namespace Scrap_Threats
                     selectedUnit = item;
                 }
             }
-            
+
+            elapsedTime = gameTime.ElapsedGameTime.TotalSeconds;
             mouseClickRectangle = new Rectangle(-8888, -9999, 1, 1);
             base.Update(gameTime);
         }
@@ -186,14 +186,11 @@ namespace Scrap_Threats
             base.Draw(gameTime);
         }
 
-        private void UpdateWorkers(GameTime gameTime)
+        private void UpdateWorkers(GameTime gameTime, Worker worker)
         {
             while (true)
             {
-                foreach (Worker worker in activeWorkers)
-                {
-                    worker.Update(gameTime);
-                }
+                worker.Update(gameTime);
             }
         }
     }
