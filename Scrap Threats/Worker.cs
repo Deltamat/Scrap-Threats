@@ -13,12 +13,12 @@ namespace Scrap_Threats
     {
         delegate void UpdateDelegate(GameTime gameTime);
         bool goingLeft = false;
-        double elapsedTime;
+        public double elapsedTime;
         public Worker(Vector2 position, string spriteName, GameTime gameTime) : base(position, spriteName)
         {
-            Thread workerThread = new Thread(WorkerUpdate);
-            workerThread.Start();
-            workerThread.IsBackground = true;
+            //Thread workerThread = new Thread(WorkerUpdate);
+            //workerThread.Start();
+            //workerThread.IsBackground = true;
         }
 
         public Worker(Vector2 position, string spriteName) : base(position, spriteName)
@@ -28,29 +28,20 @@ namespace Scrap_Threats
 
         public override void Update(GameTime gameTime)
         {
-            //elapsedTime += gameTime.ElapsedGameTime.TotalSeconds;
-            //if (goingLeft == true)
-            //{
-            //    position.X -= 10;
-            //}
-            //else
-            //{
-            //    position.X += 10;
-            //}
+            elapsedTime = GameWorld.elapsedTime;
 
-            //if (position.X >= 1920)
-            //{
-            //    goingLeft = true;
-            //}
-            //else if (position.X <= 0)
-            //{
-            //    goingLeft = false;
-            //}
-            //Thread.Sleep(1);
-            while (true)
-            { 
-            WorkerUpdate();
+            //WorkerUpdate();
+            if (Vector2.Distance(waypoint, position) < 1)
+            {
+                position = waypoint;
             }
+            else
+            {               
+                Vector2 direction = waypoint - position;
+                direction.Normalize();
+                position += (direction * 1f * (float)elapsedTime);
+            }
+            Thread.Sleep(1);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -67,13 +58,16 @@ namespace Scrap_Threats
    
         public void WorkerUpdate()
         {
-            while (position.X < 1900 && position.X > 1)
+            if (Vector2.Distance(waypoint, position) < 1)
+            {
+                position = waypoint;
+            }
+            else
             {
                 Vector2 direction = waypoint - position;
                 direction.Normalize();
-                position += direction;
-                Thread.Sleep(5);
-            }
+                position += (direction * 0.0001f);                
+            }           
         }
     }
 }

@@ -13,6 +13,7 @@ namespace Scrap_Threats
     /// </summary>
     public class GameWorld : Game
     {
+        public static double elapsedTime;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Texture2D background;
@@ -108,6 +109,7 @@ namespace Scrap_Threats
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            elapsedTime = gameTime.ElapsedGameTime.TotalMilliseconds;
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
@@ -142,18 +144,26 @@ namespace Scrap_Threats
                 }
             }
 
-            //if (a == null)
-            //{
-            //    gameObjects.Add(a = new Worker(new Vector2(200), "test"));
-            //    gameObjects.Add(new Worker(new Vector2(400), "test"));
-            //    gameObjects.Add(new Worker(new Vector2(300), "test"));
-            //}
+            foreach (Worker item in ActiveWorkers)
+            {
+                if (item.CollisionBox.Intersects(mouseClickRectangle))
+                {
+                    selectedUnit = item;
+                }
+            }
+
+            if (a == null)
+            {
+                gameObjects.Add(a = new Worker(new Vector2(200), "test"));
+                gameObjects.Add(new Worker(new Vector2(400), "test"));
+                gameObjects.Add(new Worker(new Vector2(300), "test"));
+            }
             //a.Update(gameTime);
 
 
 
             // TODO: Add your update logic here
-
+            mouseClickRectangle = new Rectangle(-8888, -9999, 1, 1);
             base.Update(gameTime);
         }
 
@@ -167,13 +177,13 @@ namespace Scrap_Threats
             spriteBatch.Begin();
             spriteBatch.Draw(background, ScreenSize, Color.White);
 
-            foreach (GameObject item in gameObjects)
-            {
-                item.Draw(spriteBatch);
-            }
             foreach (Worker worker in ActiveWorkers)
             {
                 worker.Draw(spriteBatch);
+            }
+            foreach (GameObject item in gameObjects)
+            {
+                item.Draw(spriteBatch);
             }
             // TODO: Add your drawing code here
 
