@@ -67,6 +67,7 @@ namespace Scrap_Threats
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            a = new Worker(new Vector2(200), "test");
 
             background = Content.Load<Texture2D>("background");
             // TODO: use this.Content to load your game content here
@@ -91,11 +92,11 @@ namespace Scrap_Threats
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            if (a == null)
-            {
-                a = new Worker(new Vector2(200), "test", gameTime);
-            }
-            //a.Update(gameTime);
+            //if (a == null)
+            //{
+            //    a = new Worker(new Vector2(200), "test", gameTime);
+            //}
+            a.Update(gameTime);
 
 
 
