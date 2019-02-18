@@ -91,7 +91,6 @@ namespace Scrap_Threats
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            a = new Worker(new Vector2(200), "test");
 
             background = Content.Load<Texture2D>("background");            
         }
@@ -146,25 +145,14 @@ namespace Scrap_Threats
                 }
             }
 
-            foreach (Worker item in ActiveWorkers)
+            foreach (Worker item in activeWorkers)
             {
                 if (item.CollisionBox.Intersects(mouseClickRectangle))
                 {
                     selectedUnit = item;
                 }
             }
-
-            if (a == null)
-            {
-                gameObjects.Add(a = new Worker(new Vector2(200), "test"));
-                gameObjects.Add(new Worker(new Vector2(400), "test"));
-                gameObjects.Add(new Worker(new Vector2(300), "test"));
-            }
-            //a.Update(gameTime);
-
-
-
-            // TODO: Add your update logic here
+            
             mouseClickRectangle = new Rectangle(-8888, -9999, 1, 1);
             base.Update(gameTime);
         }

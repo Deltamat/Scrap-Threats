@@ -18,9 +18,7 @@ namespace Scrap_Threats
 
         public Worker(Vector2 position, string spriteName, GameTime gameTime) : base(position, spriteName)
         {
-            //Thread workerThread = new Thread(WorkerUpdate);
-            //workerThread.Start();
-            //workerThread.IsBackground = true;
+
         }
 
         public Worker(Vector2 position, string spriteName) : base(position, spriteName)
@@ -30,25 +28,25 @@ namespace Scrap_Threats
 
         public override void Update(GameTime gameTime)
         {           
-            elapsedTime += gameTime.ElapsedGameTime.TotalSeconds;
-            if (goingLeft == true)
-            {
-                position.X -= 10;
-            }
-            else
-            {
-                position.X += 10;
-            }
+            //elapsedTime += gameTime.ElapsedGameTime.TotalSeconds;
+            //if (goingLeft == true)
+            //{
+            //    position.X -= 10;
+            //}
+            //else
+            //{
+            //    position.X += 10;
+            //}
 
-            if (position.X >= 1920)
-            {
-                goingLeft = true;
-            }
-            else if (position.X <= 0)
-            {
-                goingLeft = false;
-            }
-            Thread.Sleep(1);
+            //if (position.X >= 1920)
+            //{
+            //    goingLeft = true;
+            //}
+            //else if (position.X <= 0)
+            //{
+            //    goingLeft = false;
+            //}
+            //Thread.Sleep(1);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
