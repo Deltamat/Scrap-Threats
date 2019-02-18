@@ -167,13 +167,13 @@ namespace Scrap_Threats
             spriteBatch.Begin();
             spriteBatch.Draw(background, ScreenSize, Color.White);
 
-            foreach (GameObject item in gameObjects)
-            {
-                item.Draw(spriteBatch);
-            }
             foreach (Worker worker in ActiveWorkers)
             {
                 worker.Draw(spriteBatch);
+            }
+            foreach (GameObject item in gameObjects)
+            {
+                item.Draw(spriteBatch);
             }
             // TODO: Add your drawing code here
 
