@@ -23,11 +23,11 @@ namespace Scrap_Threats
 
         public Worker(Vector2 position, string spriteName) : base(position, spriteName)
         {
-            
+            waypoint = position;
         }
 
         public override void Update(GameTime gameTime)
-        {           
+        {
             //elapsedTime += gameTime.ElapsedGameTime.TotalSeconds;
             //if (goingLeft == true)
             //{
@@ -46,7 +46,18 @@ namespace Scrap_Threats
             //{
             //    goingLeft = false;
             //}
-            //Thread.Sleep(1);
+            
+            if (Vector2.Distance(waypoint, position) < 1)
+            {
+                position = waypoint;
+            }
+            else
+            {
+                Vector2 direction = waypoint - position;
+                direction.Normalize();
+                position += direction;
+            }
+            Thread.Sleep(1);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -69,6 +80,10 @@ namespace Scrap_Threats
                 direction.Normalize();
                 position += direction;
                 Thread.Sleep(5);
+                if (Vector2.Distance(waypoint, position) < 1)
+                {
+                    position = waypoint;
+                }
             }
         }
     }
