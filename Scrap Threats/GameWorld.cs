@@ -5,6 +5,9 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Windows.Forms;
+using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
+using Keys = Microsoft.Xna.Framework.Input.Keys;
 
 namespace Scrap_Threats
 {
@@ -17,13 +20,16 @@ namespace Scrap_Threats
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Texture2D background;
-        List<Worker> ActiveWorkers = new List<Worker>();
-        Worker a;
+        List<Worker> activeWorkers = new List<Worker>();
+        List<Building> buildings = new List<Building>();
         Thread t;
+        Worker worker;
+        Building stockpile;
         Random rng = new Random();
         public static Rectangle mouseClickRectangle;
         public static HashSet<GameObject> gameObjects = new HashSet<GameObject>();
         public static GameObject selectedUnit;
+        public static double elapsedTime;
 
         private static ContentManager content;
         public static ContentManager ContentManager
@@ -39,10 +45,9 @@ namespace Scrap_Threats
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             content = Content;
-            //Sets the window size
-            graphics.PreferredBackBufferWidth = 1920;
-            graphics.PreferredBackBufferHeight = 1080;
-            graphics.ApplyChanges();
+            //Maximises
+            var form = (Form)Form.FromHandle(Window.Handle);
+            form.WindowState = FormWindowState.Maximized;
         }
 
         /// <summary>
@@ -64,17 +69,16 @@ namespace Scrap_Threats
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            GameTime gameTime = new GameTime();
             IsMouseVisible = true;
             for (int i = 0; i < 10; i++)
             {
-                ActiveWorkers.Add(new Worker(new Vector2(rng.Next(100,1800), rng.Next(100,900)), "test"));
+                worker = new Worker(new Vector2(rng.Next(100, 1800), rng.Next(100, 900)), "test");
+                activeWorkers.Add(worker);
             }
-
-            GameTime gameTime = new GameTime();
-            t = new Thread(() => UpdateWorkers(gameTime));
-            t.IsBackground = true;
-            t.Start();
+           
+            stockpile = new Building(new Vector2(960, 540), "stockpile_empty");
+            buildings.Add(stockpile);
 
             base.Initialize();
         }
@@ -87,10 +91,8 @@ namespace Scrap_Threats
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            a = new Worker(new Vector2(200), "test");
 
-            background = Content.Load<Texture2D>("background");
-            // TODO: use this.Content to load your game content here
+            background = Content.Load<Texture2D>("background");            
         }
 
         /// <summary>
@@ -99,7 +101,7 @@ namespace Scrap_Threats
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            
         }
 
         /// <summary>
@@ -124,6 +126,7 @@ namespace Scrap_Threats
                 if (selectedUnit != null)
                 {
                     selectedUnit.waypoint = new Vector2(Mouse.GetState().Position.X, Mouse.GetState().Position.Y);
+                    selectedUnit.waypointRectangle = new Rectangle((int)selectedUnit.waypoint.X, (int)selectedUnit.waypoint.Y, 1, 1);
                 }
             }
 
@@ -144,7 +147,7 @@ namespace Scrap_Threats
                 }
             }
 
-            foreach (Worker item in ActiveWorkers)
+            foreach (Worker item in activeWorkers)
             {
                 if (item.CollisionBox.Intersects(mouseClickRectangle))
                 {
@@ -152,17 +155,7 @@ namespace Scrap_Threats
                 }
             }
 
-            if (a == null)
-            {
-                gameObjects.Add(a = new Worker(new Vector2(200), "test"));
-                gameObjects.Add(new Worker(new Vector2(400), "test"));
-                gameObjects.Add(new Worker(new Vector2(300), "test"));
-            }
-            //a.Update(gameTime);
-
-
-
-            // TODO: Add your update logic here
+            elapsedTime = gameTime.ElapsedGameTime.TotalSeconds;
             mouseClickRectangle = new Rectangle(-8888, -9999, 1, 1);
             base.Update(gameTime);
         }
@@ -177,7 +170,12 @@ namespace Scrap_Threats
             spriteBatch.Begin();
             spriteBatch.Draw(background, ScreenSize, Color.White);
 
-            foreach (Worker worker in ActiveWorkers)
+            foreach (Building building in buildings)
+            {
+                building.Draw(spriteBatch);
+            }
+
+            foreach (Worker worker in activeWorkers)
             {
                 worker.Draw(spriteBatch);
             }
@@ -185,20 +183,16 @@ namespace Scrap_Threats
             {
                 item.Draw(spriteBatch);
             }
-            // TODO: Add your drawing code here
 
             spriteBatch.End();
             base.Draw(gameTime);
         }
 
-        private void UpdateWorkers(GameTime gameTime)
+        private void UpdateWorkers(GameTime gameTime, Worker worker)
         {
             while (true)
             {
-                foreach (Worker worker in ActiveWorkers)
-                {
-                    worker.Update(gameTime);
-                }
+                worker.Update(gameTime);
             }
         }
     }

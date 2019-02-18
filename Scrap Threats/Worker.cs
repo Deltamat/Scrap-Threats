@@ -12,36 +12,34 @@ namespace Scrap_Threats
     class Worker : Unit
     {
         delegate void UpdateDelegate(GameTime gameTime);
-        bool goingLeft = false;
-        public double elapsedTime;
-        public Worker(Vector2 position, string spriteName, GameTime gameTime) : base(position, spriteName)
-        {
-            //Thread workerThread = new Thread(WorkerUpdate);
-            //workerThread.Start();
-            //workerThread.IsBackground = true;
-        }
+        Random rng = new Random();
 
         public Worker(Vector2 position, string spriteName) : base(position, spriteName)
         {
-            
+            alive = true;
+            GameTime gameTime = new GameTime();
+            waypoint = position;
+            Thread t = new Thread(() => Update(gameTime));
+            t.IsBackground = true;
+            t.Start();
         }
 
         public override void Update(GameTime gameTime)
-        {
-            elapsedTime = GameWorld.elapsedTime;
-
-            //WorkerUpdate();
-            if (Vector2.Distance(waypoint, position) < 1)
-            {
-                position = waypoint;
-            }
-            else
+        {            
+            while (alive == true)
             {               
-                Vector2 direction = waypoint - position;
-                direction.Normalize();
-                position += (direction * 1f * (float)elapsedTime);
-            }
-            Thread.Sleep(1);
+                if (Vector2.Distance(waypoint, position) < 2)
+                {
+                    position = waypoint;
+                }
+                else
+                {
+                    Vector2 direction = waypoint - position;
+                    direction.Normalize();
+                    position += direction * 50f* (float)GameWorld.elapsedTime;
+                }
+                Thread.Sleep(1);
+            }                        
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -58,16 +56,26 @@ namespace Scrap_Threats
    
         public void WorkerUpdate()
         {
-            if (Vector2.Distance(waypoint, position) < 1)
+            while (position.X < 1000)
             {
-                position = waypoint;
+                if (true)
+                {
+                    Vector2 direction = waypoint - position;
+                    direction.Normalize();
+                    position += direction;
+                    Thread.Sleep(5);
+                    if (Vector2.Distance(waypoint, position) < 1)
+                    {
+                        position = waypoint;
+                    }
+                }
+
+
+                if (waypointRectangle.Intersects(GameWorld.stockpile.CollisionBox))
+                {
+                    position = new Vector2(1000);
+                }
             }
-            else
-            {
-                Vector2 direction = waypoint - position;
-                direction.Normalize();
-                position += (direction * 0.0001f);                
-            }           
         }
     }
 }
