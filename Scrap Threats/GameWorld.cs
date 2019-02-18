@@ -24,12 +24,12 @@ namespace Scrap_Threats
         List<Building> buildings = new List<Building>();
         Thread t;
         Worker worker;
-        Building stockpile;
+        public static Building stockpile;
         Random rng = new Random();
         public static Rectangle mouseClickRectangle;
         public static HashSet<GameObject> gameObjects = new HashSet<GameObject>();
         public static GameObject selectedUnit;
-        public static double elapsedTime;
+        
 
         private static ContentManager content;
         public static ContentManager ContentManager
