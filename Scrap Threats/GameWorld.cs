@@ -153,10 +153,7 @@ namespace Scrap_Threats
                     selectedUnit = item;
                 }
             }
-
-
-
-            // TODO: Add your update logic here
+            
             mouseClickRectangle = new Rectangle(-8888, -9999, 1, 1);
             base.Update(gameTime);
         }
