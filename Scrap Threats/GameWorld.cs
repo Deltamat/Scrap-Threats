@@ -2,7 +2,9 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Scrap_Threats
 {
@@ -14,7 +16,10 @@ namespace Scrap_Threats
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Texture2D background;
+        List<Worker> ActiveWorkers = new List<Worker>();
         Worker a;
+        Thread t;
+        Random rng = new Random();
         public static Rectangle mouseClickRectangle;
         public static HashSet<GameObject> gameObjects = new HashSet<GameObject>();
         public static GameObject selectedUnit;
@@ -60,6 +65,16 @@ namespace Scrap_Threats
         {
             // TODO: Add your initialization logic here
             IsMouseVisible = true;
+            for (int i = 0; i < 10; i++)
+            {
+                ActiveWorkers.Add(new Worker(new Vector2(rng.Next(100,1800), rng.Next(100,900)), "test"));
+            }
+
+            GameTime gameTime = new GameTime();
+            t = new Thread(() => UpdateWorkers(gameTime));
+            t.IsBackground = true;
+            t.Start();
+
             base.Initialize();
         }
 
@@ -71,6 +86,7 @@ namespace Scrap_Threats
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            a = new Worker(new Vector2(200), "test");
 
             background = Content.Load<Texture2D>("background");
             // TODO: use this.Content to load your game content here
@@ -155,10 +171,25 @@ namespace Scrap_Threats
             {
                 item.Draw(spriteBatch);
             }
+            foreach (Worker worker in ActiveWorkers)
+            {
+                worker.Draw(spriteBatch);
+            }
             // TODO: Add your drawing code here
 
             spriteBatch.End();
             base.Draw(gameTime);
+        }
+
+        private void UpdateWorkers(GameTime gameTime)
+        {
+            while (true)
+            {
+                foreach (Worker worker in ActiveWorkers)
+                {
+                    worker.Update(gameTime);
+                }
+            }
         }
     }
 }
