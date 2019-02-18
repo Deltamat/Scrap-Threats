@@ -124,6 +124,7 @@ namespace Scrap_Threats
                 if (selectedUnit != null)
                 {
                     selectedUnit.waypoint = new Vector2(Mouse.GetState().Position.X, Mouse.GetState().Position.Y);
+                    selectedUnit.waypointRectangle = new Rectangle((int)selectedUnit.waypoint.X, (int)selectedUnit.waypoint.Y, 1, 1);
                 }
             }
 
@@ -180,7 +181,6 @@ namespace Scrap_Threats
             {
                 item.Draw(spriteBatch);
             }
-            // TODO: Add your drawing code here
 
             spriteBatch.End();
             base.Draw(gameTime);

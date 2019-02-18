@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Scrap_Threats
 {
-    class Building : GameObject
+    public class Building : GameObject
     {
         public Building(Vector2 position, string spriteName) : base(position, spriteName)
         {

@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace Scrap_Threats
 {
-    class Stockpile : Building
+    public class Stockpile : Building
     {
         public Stockpile(Vector2 position, string spriteName) : base(position, spriteName)
         {

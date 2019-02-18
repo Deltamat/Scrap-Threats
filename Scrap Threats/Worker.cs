@@ -14,11 +14,6 @@ namespace Scrap_Threats
         delegate void UpdateDelegate(GameTime gameTime);
         Random rng = new Random();
 
-        public Worker(Vector2 position, string spriteName, GameTime gameTime) : base(position, spriteName)
-        {
-
-        }
-
         public Worker(Vector2 position, string spriteName) : base(position, spriteName)
         {
             alive = true;
@@ -63,13 +58,22 @@ namespace Scrap_Threats
         {
             while (position.X < 1000)
             {
-                Vector2 direction = waypoint - position;
-                direction.Normalize();
-                position += direction;
-                Thread.Sleep(5);
-                if (Vector2.Distance(waypoint, position) < 1)
+                if (true)
                 {
-                    position = waypoint;
+                    Vector2 direction = waypoint - position;
+                    direction.Normalize();
+                    position += direction;
+                    Thread.Sleep(5);
+                    if (Vector2.Distance(waypoint, position) < 1)
+                    {
+                        position = waypoint;
+                    }
+                }
+
+
+                if (waypointRectangle.Intersects(GameWorld.stockpile.CollisionBox))
+                {
+                    position = new Vector2(1000);
                 }
             }
         }
