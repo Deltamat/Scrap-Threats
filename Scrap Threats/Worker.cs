@@ -27,26 +27,30 @@ namespace Scrap_Threats
         }
 
         public override void Update(GameTime gameTime)
-        {           
-            elapsedTime += gameTime.ElapsedGameTime.TotalSeconds;
-            if (goingLeft == true)
-            {
-                position.X -= 10;
-            }
-            else
-            {
-                position.X += 10;
-            }
+        {
+            //elapsedTime += gameTime.ElapsedGameTime.TotalSeconds;
+            //if (goingLeft == true)
+            //{
+            //    position.X -= 10;
+            //}
+            //else
+            //{
+            //    position.X += 10;
+            //}
 
-            if (position.X >= 1920)
-            {
-                goingLeft = true;
+            //if (position.X >= 1920)
+            //{
+            //    goingLeft = true;
+            //}
+            //else if (position.X <= 0)
+            //{
+            //    goingLeft = false;
+            //}
+            //Thread.Sleep(1);
+            while (true)
+            { 
+            WorkerUpdate();
             }
-            else if (position.X <= 0)
-            {
-                goingLeft = false;
-            }
-            Thread.Sleep(1);            
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -63,7 +67,7 @@ namespace Scrap_Threats
    
         public void WorkerUpdate()
         {
-            while (position.X < 1000)
+            while (position.X < 1900 && position.X > 1)
             {
                 Vector2 direction = waypoint - position;
                 direction.Normalize();

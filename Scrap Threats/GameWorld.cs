@@ -132,7 +132,7 @@ namespace Scrap_Threats
                 {
                     selectedUnit = go;
                 }
-                
+
                 foreach (GameObject other in gameObjects)
                 {
                     if (go != other && go.IsColliding(other))
@@ -142,12 +142,12 @@ namespace Scrap_Threats
                 }
             }
 
-            if (a == null)
-            {
-                gameObjects.Add(a = new Worker(new Vector2(200), "test"));
-                gameObjects.Add(new Worker(new Vector2(400), "test"));
-                gameObjects.Add(new Worker(new Vector2(300), "test"));
-            }
+            //if (a == null)
+            //{
+            //    gameObjects.Add(a = new Worker(new Vector2(200), "test"));
+            //    gameObjects.Add(new Worker(new Vector2(400), "test"));
+            //    gameObjects.Add(new Worker(new Vector2(300), "test"));
+            //}
             //a.Update(gameTime);
 
 
