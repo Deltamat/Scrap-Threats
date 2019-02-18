@@ -142,6 +142,14 @@ namespace Scrap_Threats
                 }
             }
 
+            foreach (Worker item in ActiveWorkers)
+            {
+                if (item.CollisionBox.Intersects(mouseClickRectangle))
+                {
+                    selectedUnit = item;
+                }
+            }
+
             if (a == null)
             {
                 gameObjects.Add(a = new Worker(new Vector2(200), "test"));
@@ -153,7 +161,7 @@ namespace Scrap_Threats
 
 
             // TODO: Add your update logic here
-
+            mouseClickRectangle = new Rectangle(-8888, -9999, 1, 1);
             base.Update(gameTime);
         }
 

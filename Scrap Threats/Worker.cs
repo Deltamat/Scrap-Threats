@@ -16,9 +16,9 @@ namespace Scrap_Threats
         double elapsedTime;
         public Worker(Vector2 position, string spriteName, GameTime gameTime) : base(position, spriteName)
         {
-            Thread workerThread = new Thread(WorkerUpdate);
-            workerThread.Start();
-            workerThread.IsBackground = true;
+            //Thread workerThread = new Thread(WorkerUpdate);
+            //workerThread.Start();
+            //workerThread.IsBackground = true;
         }
 
         public Worker(Vector2 position, string spriteName) : base(position, spriteName)
