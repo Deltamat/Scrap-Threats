@@ -19,34 +19,46 @@ namespace Scrap_Threats
             //Thread workerThread = new Thread(WorkerUpdate);
             //workerThread.Start();
             //workerThread.IsBackground = true;
+
         }
 
         public Worker(Vector2 position, string spriteName) : base(position, spriteName)
         {
-            
+            waypoint = position;
         }
 
         public override void Update(GameTime gameTime)
-        {           
-            elapsedTime += gameTime.ElapsedGameTime.TotalSeconds;
-            if (goingLeft == true)
+        {
+            //elapsedTime += gameTime.ElapsedGameTime.TotalSeconds;
+            //if (goingLeft == true)
+            //{
+            //    position.X -= 10;
+            //}
+            //else
+            //{
+            //    position.X += 10;
+            //}
+
+            //if (position.X >= 1920)
+            //{
+            //    goingLeft = true;
+            //}
+            //else if (position.X <= 0)
+            //{
+            //    goingLeft = false;
+            //}
+            
+            if (Vector2.Distance(waypoint, position) < 1)
             {
-                position.X -= 10;
+                position = waypoint;
             }
             else
             {
-                position.X += 10;
+                Vector2 direction = waypoint - position;
+                direction.Normalize();
+                position += direction;
             }
-
-            if (position.X >= 1920)
-            {
-                goingLeft = true;
-            }
-            else if (position.X <= 0)
-            {
-                goingLeft = false;
-            }
-            Thread.Sleep(1);            
+            //Thread.Sleep(1);            
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -69,6 +81,10 @@ namespace Scrap_Threats
                 direction.Normalize();
                 position += direction;
                 Thread.Sleep(5);
+                if (Vector2.Distance(waypoint, position) < 1)
+                {
+                    position = waypoint;
+                }
             }
         }
     }
