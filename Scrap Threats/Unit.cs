@@ -17,7 +17,7 @@ namespace Scrap_Threats
 
         public Unit(Vector2 position, string spriteName) : base(position, spriteName)
         {
-
+ 
         }
 
         

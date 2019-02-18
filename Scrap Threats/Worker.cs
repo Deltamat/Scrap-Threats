@@ -70,7 +70,6 @@ namespace Scrap_Threats
                     }
                 }
 
-
                 if (waypointRectangle.Intersects(GameWorld.stockpile.CollisionBox))
                 {
                     position = new Vector2(1000);

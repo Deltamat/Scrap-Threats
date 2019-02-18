@@ -21,9 +21,8 @@ namespace Scrap_Threats
         Texture2D background;
         List<Worker> activeWorkers = new List<Worker>();
         List<Building> buildings = new List<Building>();
-        Thread t;
         Worker worker;
-        Building stockpile;
+        public static Building stockpile;
         Random rng = new Random();
         public static Rectangle mouseClickRectangle;
         public static HashSet<GameObject> gameObjects = new HashSet<GameObject>();
@@ -76,7 +75,7 @@ namespace Scrap_Threats
                 activeWorkers.Add(worker);
             }
            
-            stockpile = new Building(new Vector2(960, 540), "stockpile_empty");
+            stockpile = new Building(new Vector2(960, 540), "stockpile_0");
             buildings.Add(stockpile);
 
             base.Initialize();
@@ -130,7 +129,6 @@ namespace Scrap_Threats
 
             foreach (GameObject go in gameObjects)
             {
-                //go.Update(gameTime);
                 if (go.CollisionBox.Intersects(mouseClickRectangle) && go is Worker)
                 {
                     selectedUnit = go;
