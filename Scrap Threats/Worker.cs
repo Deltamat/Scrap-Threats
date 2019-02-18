@@ -14,6 +14,8 @@ namespace Scrap_Threats
         delegate void UpdateDelegate(GameTime gameTime);
         bool goingLeft = false;
         double elapsedTime;
+        Random rng = new Random();
+
         public Worker(Vector2 position, string spriteName, GameTime gameTime) : base(position, spriteName)
         {
 
@@ -44,12 +46,12 @@ namespace Scrap_Threats
             {
                 goingLeft = false;
             }
-            Thread.Sleep(1);            
+            Thread.Sleep(1);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(sprite, Position, null, Color.White, rotation, new Vector2(sprite.Width * 0.5f, sprite.Height * 0.5f), 1f, SpriteEffects.None, 0.1f);
+            spriteBatch.Draw(Sprite, Position, null, Color.White, rotation, new Vector2(Sprite.Width * 0.5f, Sprite.Height * 0.5f), 1f, SpriteEffects.None, 0.1f);
         }
    
     }

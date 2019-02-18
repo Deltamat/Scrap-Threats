@@ -10,26 +10,23 @@ namespace Scrap_Threats
 {
     class GameObject
     {
-        /// <summary>
-        /// these are lovely fields (ser lige om min nye email adresse ikke har fucket det op)
-        /// </summary>
         protected Texture2D sprite;
         protected Vector2 position;
-        public Vector2 Position { get => position; set => position = value; }
         protected float rotation;
+        public Texture2D Sprite { get => sprite; set => sprite = value; }
+        public Vector2 Position { get => position; set => position = value; }
 
         public GameObject(Vector2 position, string spriteName)
         {
             this.Position = position;
-            sprite = GameWorld.ContentManager.Load<Texture2D>(spriteName);
-            //GameWorld.AddGameOject(this);
+            Sprite = GameWorld.ContentManager.Load<Texture2D>(spriteName);
         }
 
         public virtual Rectangle CollisionBox
         {
             get
             {
-                return new Rectangle((int)(Position.X - sprite.Width * 0.5), (int)(Position.Y - sprite.Height * 0.5), sprite.Width, sprite.Height);
+                return new Rectangle((int)(Position.X - Sprite.Width * 0.5), (int)(Position.Y - Sprite.Height * 0.5), Sprite.Width, Sprite.Height);
             }
         }
 
@@ -51,12 +48,12 @@ namespace Scrap_Threats
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(sprite, Position, null, Color.White, rotation, new Vector2(sprite.Width * 0.5f, sprite.Height * 0.5f), 1f, SpriteEffects.None, 0.1f);
+            spriteBatch.Draw(Sprite, Position, null, Color.White, rotation, new Vector2(Sprite.Width * 0.5f, Sprite.Height * 0.5f), 1f, SpriteEffects.None, 0.1f);
         }
 
         public void Destroy()
         {
-            //GameWorld.RemoveGameObject(this);
+
         }
     }
 }
