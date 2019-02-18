@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace Scrap_Threats
 {
@@ -14,7 +15,9 @@ namespace Scrap_Threats
         SpriteBatch spriteBatch;
         Texture2D background;
         Worker a;
-        static public GameTime staticGameTime;
+        public static Rectangle mouseClickRectangle;
+        public static HashSet<GameObject> gameObjects = new HashSet<GameObject>();
+        public static GameObject selectedUnit;
 
         private static ContentManager content;
         public static ContentManager ContentManager
@@ -92,10 +95,42 @@ namespace Scrap_Threats
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            staticGameTime = gameTime;
+            if (Mouse.GetState().LeftButton is ButtonState.Pressed)
+            {
+                mouseClickRectangle = new Rectangle(Mouse.GetState().Position.X, Mouse.GetState().Position.Y, 1, 1);
+                selectedUnit = null;
+            }
+
+            if (Mouse.GetState().RightButton is ButtonState.Pressed)
+            {
+                if (selectedUnit != null)
+                {
+                    selectedUnit.waypoint = new Vector2(Mouse.GetState().Position.X, Mouse.GetState().Position.Y);
+                }
+            }
+
+            foreach (GameObject go in gameObjects)
+            {
+                //go.Update(gameTime);
+                if (go.CollisionBox.Intersects(mouseClickRectangle) && go is Worker)
+                {
+                    selectedUnit = go;
+                }
+                
+                foreach (GameObject other in gameObjects)
+                {
+                    if (go != other && go.IsColliding(other))
+                    {
+                        go.DoCollision(other);
+                    }
+                }
+            }
+
             if (a == null)
             {
-                a = new Worker(new Vector2(200), "test");
+                gameObjects.Add(a = new Worker(new Vector2(200), "test"));
+                gameObjects.Add(new Worker(new Vector2(400), "test"));
+                gameObjects.Add(new Worker(new Vector2(300), "test"));
             }
             //a.Update(gameTime);
 
@@ -116,8 +151,10 @@ namespace Scrap_Threats
             spriteBatch.Begin();
             spriteBatch.Draw(background, ScreenSize, Color.White);
 
-
-            a.Draw(spriteBatch);
+            foreach (GameObject item in gameObjects)
+            {
+                item.Draw(spriteBatch);
+            }
             // TODO: Add your drawing code here
 
             spriteBatch.End();

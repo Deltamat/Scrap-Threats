@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Scrap_Threats
 {
-    class GameObject
+    public class GameObject
     {
         /// <summary>
         /// these are lovely fields (ser lige om min nye email adresse ikke har fucket det op)
@@ -17,6 +17,8 @@ namespace Scrap_Threats
         protected Vector2 position;
         public Vector2 Position { get => position; set => position = value; }
         protected float rotation;
+        public Vector2 waypoint;
+
 
         public GameObject(Vector2 position, string spriteName)
         {
