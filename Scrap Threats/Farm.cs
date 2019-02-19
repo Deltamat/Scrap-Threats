@@ -48,7 +48,7 @@ namespace Scrap_Threats
             {
                 sprite = GameWorld.ContentManager.Load<Texture2D>("farm_4");
             }
-            spriteBatch.Draw(sprite, Position, null, Color.White, rotation, new Vector2(sprite.Width * 0.5f, sprite.Height * 0.5f), 3f, SpriteEffects.None, 0.1f);
+            spriteBatch.Draw(sprite, Position, null, Color.White, rotation, new Vector2(sprite.Width * 0.5f, sprite.Height * 0.5f), 2f, SpriteEffects.None, 0.1f);
         }
 
         public override void Update(GameTime gameTime)

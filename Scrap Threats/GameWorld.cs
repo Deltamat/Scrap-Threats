@@ -87,7 +87,7 @@ namespace Scrap_Threats
 
             farm = new Farm(new Vector2(1700, 250), "farm_0");
             stockpile = new Stockpile(new Vector2(960, 540), "stockpile_0");
-            scrapyard = new Scrapyard(new Vector2(200, 540), "stockpile_0");
+            scrapyard = new Scrapyard(new Vector2(200, 540), "junkpile");
             buildings.Add(farm);
             buildings.Add(stockpile);
             buildings.Add(scrapyard);
