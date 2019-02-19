@@ -25,10 +25,14 @@ namespace Scrap_Threats
         Thread t;
         Worker worker;
         public static Building stockpile;
+        public static Scrapyard scrapyard;
         Random rng = new Random();
         public static Rectangle mouseClickRectangle;
+        Vector2 selectionBoxOrigin;
         public static HashSet<GameObject> gameObjects = new HashSet<GameObject>();
-        public static GameObject selectedUnit;
+        public static List<GameObject> selectedUnit = new List<GameObject>();
+        public static int scrap;
+        SpriteFont font;
         
 
         private static ContentManager content;
@@ -78,6 +82,8 @@ namespace Scrap_Threats
             }
            
             stockpile = new Building(new Vector2(960, 540), "stockpile_empty");
+            scrapyard = new Scrapyard(new Vector2(200, 540), "stockpile_empty");
+            buildings.Add(scrapyard);
             buildings.Add(stockpile);
 
             base.Initialize();
@@ -92,7 +98,8 @@ namespace Scrap_Threats
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            background = Content.Load<Texture2D>("background");            
+            background = Content.Load<Texture2D>("background");
+            font = Content.Load<SpriteFont>("font");
         }
 
         /// <summary>
@@ -111,47 +118,77 @@ namespace Scrap_Threats
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            elapsedTime = gameTime.ElapsedGameTime.TotalMilliseconds;
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+
             if (Mouse.GetState().LeftButton is ButtonState.Pressed)
             {
-                mouseClickRectangle = new Rectangle(Mouse.GetState().Position.X, Mouse.GetState().Position.Y, 1, 1);
-                selectedUnit = null;
-            }
 
+                if (selectionBoxOrigin == new Vector2(-100))
+                {
+                    selectionBoxOrigin = new Vector2(Mouse.GetState().Position.X, Mouse.GetState().Position.Y);
+                    selectedUnit.RemoveRange(0, selectedUnit.Count);
+                }
+
+                mouseClickRectangle = new Rectangle((int)selectionBoxOrigin.X, (int)selectionBoxOrigin.Y, (int)(Mouse.GetState().Position.X - selectionBoxOrigin.X), (int)(Mouse.GetState().Position.Y - selectionBoxOrigin.Y));
+            }
+            else
+            {
+                selectionBoxOrigin = new Vector2(-100);
+            }
             if (Mouse.GetState().RightButton is ButtonState.Pressed)
             {
-                if (selectedUnit != null)
+                if (selectedUnit.Count > 0)
                 {
-                    selectedUnit.waypoint = new Vector2(Mouse.GetState().Position.X, Mouse.GetState().Position.Y);
-                    selectedUnit.waypointRectangle = new Rectangle((int)selectedUnit.waypoint.X, (int)selectedUnit.waypoint.Y, 1, 1);
-                }
-            }
-
-            foreach (GameObject go in gameObjects)
-            {
-                //go.Update(gameTime);
-                if (go.CollisionBox.Intersects(mouseClickRectangle) && go is Worker)
-                {
-                    selectedUnit = go;
-                }
-
-                foreach (GameObject other in gameObjects)
-                {
-                    if (go != other && go.IsColliding(other))
+                    foreach (var item in selectedUnit)
                     {
-                        go.DoCollision(other);
+                        item.waypoint = new Vector2(Mouse.GetState().Position.X, Mouse.GetState().Position.Y);
+                        item.waypointRectangle = new Rectangle((int)item.waypoint.X, (int)item.waypoint.Y, 1, 1);
                     }
                 }
             }
+
+            //foreach (GameObject go in gameObjects)
+            //{
+            //    //go.Update(gameTime);
+            //    if (go.CollisionBox.Intersects(mouseClickRectangle) && go is Worker)
+            //    {
+            //        if (mouseClickRectangle.Width > 10 && mouseClickRectangle.Height > 10)
+            //        {
+            //            selectedUnit.Add(go);
+            //        }
+            //        else
+            //        {
+            //            selectedUnit.Add(go);
+            //            break;
+            //        }
+            //    }
+
+            //    foreach (GameObject other in gameObjects)
+            //    {
+            //        if (go != other && go.IsColliding(other))
+            //        {
+            //            go.DoCollision(other);
+            //        }
+            //    }
+            //}
 
             foreach (Worker item in activeWorkers)
             {
                 if (item.CollisionBox.Intersects(mouseClickRectangle))
                 {
-                    selectedUnit = item;
+                    //selectedUnit.Add(item);
+
+                    if (mouseClickRectangle.Width > 10 && mouseClickRectangle.Height > 10)
+                    {
+                        selectedUnit.Add(item);
+                    }
+                    else
+                    {
+                        selectedUnit.Add(item);
+                        break;
+                    }
                 }
             }
 
@@ -183,6 +220,9 @@ namespace Scrap_Threats
             {
                 item.Draw(spriteBatch);
             }
+
+            spriteBatch.DrawString(font, $"{scrap}", new Vector2(10), Color.White);
+            spriteBatch.Draw(stockpile.Sprite, mouseClickRectangle, Color.Green);
 
             spriteBatch.End();
             base.Draw(gameTime);

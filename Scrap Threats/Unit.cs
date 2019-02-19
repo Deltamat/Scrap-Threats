@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Scrap_Threats
 {
-    abstract class Unit : GameObject
+    public abstract class Unit : GameObject
     {
         protected int health;
         protected float speed;
