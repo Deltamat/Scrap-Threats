@@ -17,7 +17,7 @@ namespace Scrap_Threats
     public class GameWorld : Game
     {
         public static double globalGameTime;
-        private double elapsedTime;
+        public static double elapsedTime;
         private double foodUpkeepTimer;
         public static int foodUpkeep;
         public static int food = 1000;
@@ -28,7 +28,8 @@ namespace Scrap_Threats
         List<Worker> activeWorkers = new List<Worker>();
         List<Building> buildings = new List<Building>();
         Worker worker;
-        public static Building stockpile;
+        public static Stockpile stockpile;
+        public static Farm farm;
         Random rng = new Random();
         public static Rectangle mouseClickRectangle;
         public static HashSet<GameObject> gameObjects = new HashSet<GameObject>();
@@ -80,9 +81,11 @@ namespace Scrap_Threats
                 worker = new Worker(new Vector2(rng.Next(100, 1800), rng.Next(100, 900)), "test");
                 activeWorkers.Add(worker);
             }
-           
-            stockpile = new Building(new Vector2(960, 540), "stockpile_0");
-            buildings.Add(stockpile);
+
+            farm = new Farm(new Vector2(1700, 250), "farm_0");
+            stockpile = new Stockpile(new Vector2(960, 540), "stockpile_0");
+            buildings.Add(farm);
+            buildings.Add(stockpile);            
 
             base.Initialize();
         }
@@ -207,6 +210,7 @@ namespace Scrap_Threats
             {
                 worker.Draw(spriteBatch);
             }
+
             foreach (GameObject item in gameObjects)
             {
                 item.Draw(spriteBatch);
