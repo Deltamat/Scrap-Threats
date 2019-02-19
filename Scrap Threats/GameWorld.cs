@@ -36,7 +36,6 @@ namespace Scrap_Threats
         Vector2 selectionBoxOrigin;
         public static HashSet<GameObject> gameObjects = new HashSet<GameObject>();
         public static List<GameObject> selectedUnit = new List<GameObject>();
-        public static int scrap;
         SpriteFont font;
         
 
