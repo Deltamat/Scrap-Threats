@@ -59,7 +59,7 @@ namespace Scrap_Threats
                     {
                         Vector2 direction = waypoint - position;
                         direction.Normalize();
-                        position += direction * 50f * (float)GameWorld.elapsedTime;
+                        position += direction * 50f * (float)GameWorld.globalGameTime;
                     }
                 }
 
@@ -67,7 +67,7 @@ namespace Scrap_Threats
                 {
                     Vector2 direction = waypoint - position;
                     direction.Normalize();
-                    position += direction * 50f * (float)GameWorld.elapsedTime;
+                    position += direction * 50f * (float)GameWorld.globalGameTime;
 
                     if (Vector2.Distance(waypoint, position) < 50)
                     {
