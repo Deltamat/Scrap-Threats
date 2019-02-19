@@ -13,7 +13,7 @@ namespace Scrap_Threats
         protected int health;
         protected float speed;
         protected int foodUpkeep;
-        protected bool alive;
+        public bool alive;
 
         public Unit(Vector2 position, string spriteName) : base(position, spriteName)
         {

@@ -16,6 +16,8 @@ namespace Scrap_Threats
 
         public Worker(Vector2 position, string spriteName) : base(position, spriteName)
         {
+            foodUpkeep = 1;
+            GameWorld.foodUpkeep += this.foodUpkeep;
             alive = true;
             GameTime gameTime = new GameTime();
             waypoint = position;
@@ -36,7 +38,7 @@ namespace Scrap_Threats
                 {
                     Vector2 direction = waypoint - position;
                     direction.Normalize();
-                    position += direction * 50f* (float)GameWorld.elapsedTime;
+                    position += direction * 50f* (float)GameWorld.globalGameTime;
                 }
                 Thread.Sleep(1);
             }                        

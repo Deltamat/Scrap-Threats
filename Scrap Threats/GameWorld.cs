@@ -16,7 +16,12 @@ namespace Scrap_Threats
     /// </summary>
     public class GameWorld : Game
     {
-        public static double elapsedTime;
+        public static double globalGameTime;
+        private double elapsedTime;
+        private double foodUpkeepTimer;
+        public static int foodUpkeep;
+        public static int food = 1000;
+        public static int scrap;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Texture2D background;
@@ -110,7 +115,6 @@ namespace Scrap_Threats
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            elapsedTime = gameTime.ElapsedGameTime.TotalMilliseconds;
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
@@ -152,8 +156,34 @@ namespace Scrap_Threats
                     selectedUnit = item;
                 }
             }
+                        
+            //Food upkeep, 60 sec timer
+            if (foodUpkeepTimer >= 60)
+            {                
+                if (food > foodUpkeep) //'Pays' upkeep
+                {
+                    food -= foodUpkeep;
+                }
+                else //Workers 'starve' to death
+                {
+                    int missingFood = foodUpkeep - food;
+                    food = 0;
+                    for (int i = 0; i < missingFood; i++) //For every piece of missing food, kill one worker
+                    {
+                        int deadWorker = rng.Next(0, activeWorkers.Count); //Picks a random worker
+                        if (activeWorkers.Count > 0) //Ensures that there are workers to kill
+                        {
+                            activeWorkers[deadWorker].alive = false;
+                            activeWorkers.Remove(activeWorkers[deadWorker]);
+                        }                       
+                    }
+                }
+                foodUpkeepTimer = 0;
+            }
 
-            elapsedTime = gameTime.ElapsedGameTime.TotalSeconds;
+            globalGameTime = gameTime.ElapsedGameTime.TotalSeconds;
+            elapsedTime += globalGameTime;
+            foodUpkeepTimer += globalGameTime;
             mouseClickRectangle = new Rectangle(-8888, -9999, 1, 1);
             base.Update(gameTime);
         }
