@@ -37,7 +37,8 @@ namespace Scrap_Threats
         public static HashSet<GameObject> gameObjects = new HashSet<GameObject>();
         public static List<GameObject> selectedUnit = new List<GameObject>();
         SpriteFont font;
-        
+        private Texture2D collisionTexture;
+
 
         private static ContentManager content;
         public static ContentManager ContentManager
@@ -106,6 +107,7 @@ namespace Scrap_Threats
 
             background = Content.Load<Texture2D>("background");
             font = Content.Load<SpriteFont>("font");
+            collisionTexture = Content.Load<Texture2D>("CollisionTexture");
         }
 
         /// <summary>
@@ -242,19 +244,16 @@ namespace Scrap_Threats
             foreach (Building building in buildings)
             {
                 building.Draw(spriteBatch);
+                DrawCollisionBox(building);
             }
 
             foreach (Worker worker in activeWorkers)
             {
                 worker.Draw(spriteBatch);
+                DrawCollisionBox(worker);
             }
 
-            foreach (GameObject item in gameObjects)
-            {
-                item.Draw(spriteBatch);
-            }
-
-            spriteBatch.DrawString(font, $"{scrap}", new Vector2(10), Color.White);
+            spriteBatch.DrawString(font, $"Scrap: {scrap}", new Vector2(10), Color.White);
             spriteBatch.Draw(stockpile.Sprite, mouseClickRectangle, Color.Green);
 
             spriteBatch.End();
@@ -267,6 +266,20 @@ namespace Scrap_Threats
             {
                 worker.Update(gameTime);
             }
+        }
+
+        private void DrawCollisionBox(GameObject go)
+        {
+            Rectangle collisionBox = go.CollisionBox;
+            Rectangle topLine = new Rectangle(collisionBox.X, collisionBox.Y, collisionBox.Width, 1);
+            Rectangle bottomLine = new Rectangle(collisionBox.X, collisionBox.Y + collisionBox.Height, collisionBox.Width, 1);
+            Rectangle rightLine = new Rectangle(collisionBox.X + collisionBox.Width, collisionBox.Y, 1, collisionBox.Height);
+            Rectangle leftLine = new Rectangle(collisionBox.X, collisionBox.Y, 1, collisionBox.Height);
+
+            spriteBatch.Draw(collisionTexture, topLine, null, Color.Red, 0, Vector2.Zero, SpriteEffects.None, 1);
+            spriteBatch.Draw(collisionTexture, bottomLine, null, Color.Red, 0, Vector2.Zero, SpriteEffects.None, 1);
+            spriteBatch.Draw(collisionTexture, rightLine, null, Color.Red, 0, Vector2.Zero, SpriteEffects.None, 1);
+            spriteBatch.Draw(collisionTexture, leftLine, null, Color.Red, 0, Vector2.Zero, SpriteEffects.None, 1);
         }
     }
 }
