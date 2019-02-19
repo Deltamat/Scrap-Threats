@@ -38,7 +38,7 @@ namespace Scrap_Threats
         {
             get
             {
-                return new Rectangle((int)((Position.X - Sprite.Width * 0.5) * scale), (int)((Position.Y - Sprite.Height * 0.5) * scale), (int)(Sprite.Width * scale), (int)(Sprite.Height * scale));
+                return new Rectangle((int)((Position.X - Sprite.Width * scale * 0.5)), (int)((Position.Y - Sprite.Height * scale * 0.5)), (int)(Sprite.Width * scale), (int)(Sprite.Height * scale));
             }
         }
     }

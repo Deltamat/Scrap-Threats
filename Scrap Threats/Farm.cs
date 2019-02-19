@@ -12,6 +12,7 @@ namespace Scrap_Threats
 {
     public class Farm : Building
     {
+        private float scale = 2f;
         private double growTimer;
         private double growthStart;
         public bool harvestable;
@@ -48,7 +49,15 @@ namespace Scrap_Threats
             {
                 sprite = GameWorld.ContentManager.Load<Texture2D>("farm_4");
             }
-            spriteBatch.Draw(sprite, Position, null, Color.White, rotation, new Vector2(sprite.Width * 0.5f, sprite.Height * 0.5f), 2f, SpriteEffects.None, 0.1f);
+            spriteBatch.Draw(sprite, Position, null, Color.White, rotation, new Vector2(sprite.Width * 0.5f, sprite.Height * 0.5f), scale, SpriteEffects.None, 0.1f);
+        }
+
+        public override Rectangle CollisionBox
+        {
+            get
+            {
+                return new Rectangle((int)((Position.X - Sprite.Width * scale * 0.5)), (int)((Position.Y - Sprite.Height * scale * 0.5)), (int)(Sprite.Width * scale), (int)(Sprite.Height * scale));
+            }
         }
 
         public override void Update(GameTime gameTime)
