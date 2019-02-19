@@ -20,6 +20,8 @@ namespace Scrap_Threats
 
         public Worker(Vector2 position, string spriteName) : base(position, spriteName)
         {
+            foodUpkeep = 1;
+            GameWorld.foodUpkeep += this.foodUpkeep;
             alive = true;
             GameTime gameTime = new GameTime();
             waypoint = position;

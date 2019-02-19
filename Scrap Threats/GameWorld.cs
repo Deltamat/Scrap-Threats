@@ -16,15 +16,20 @@ namespace Scrap_Threats
     /// </summary>
     public class GameWorld : Game
     {
+        public static double globalGameTime;
         public static double elapsedTime;
+        private double foodUpkeepTimer;
+        public static int foodUpkeep;
+        public static int food = 1000;
+        public static int scrap;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Texture2D background;
         List<Worker> activeWorkers = new List<Worker>();
         List<Building> buildings = new List<Building>();
-        Thread t;
         Worker worker;
-        public static Building stockpile;
+        public static Stockpile stockpile;
+        public static Farm farm;
         public static Scrapyard scrapyard;
         Random rng = new Random();
         public static Rectangle mouseClickRectangle;
@@ -80,11 +85,13 @@ namespace Scrap_Threats
                 worker = new Worker(new Vector2(rng.Next(100, 1800), rng.Next(100, 900)), "test");
                 activeWorkers.Add(worker);
             }
-           
-            stockpile = new Building(new Vector2(960, 540), "stockpile_empty");
-            scrapyard = new Scrapyard(new Vector2(200, 540), "stockpile_empty");
-            buildings.Add(scrapyard);
+
+            farm = new Farm(new Vector2(1700, 250), "farm_0");
+            stockpile = new Stockpile(new Vector2(960, 540), "stockpile_0");
+            scrapyard = new Scrapyard(new Vector2(200, 540), "stockpile_0");
+            buildings.Add(farm);
             buildings.Add(stockpile);
+            buildings.Add(scrapyard);
 
             base.Initialize();
         }
@@ -191,8 +198,34 @@ namespace Scrap_Threats
                     }
                 }
             }
+                        
+            //Food upkeep, 60 sec timer
+            if (foodUpkeepTimer >= 60)
+            {                
+                if (food > foodUpkeep) //'Pays' upkeep
+                {
+                    food -= foodUpkeep;
+                }
+                else //Workers 'starve' to death
+                {
+                    int missingFood = foodUpkeep - food;
+                    food = 0;
+                    for (int i = 0; i < missingFood; i++) //For every piece of missing food, kill one worker
+                    {
+                        int deadWorker = rng.Next(0, activeWorkers.Count); //Picks a random worker
+                        if (activeWorkers.Count > 0) //Ensures that there are workers to kill
+                        {
+                            activeWorkers[deadWorker].alive = false;
+                            activeWorkers.Remove(activeWorkers[deadWorker]);
+                        }                       
+                    }
+                }
+                foodUpkeepTimer = 0;
+            }
 
-            elapsedTime = gameTime.ElapsedGameTime.TotalSeconds;
+            globalGameTime = gameTime.ElapsedGameTime.TotalSeconds;
+            elapsedTime += globalGameTime;
+            foodUpkeepTimer += globalGameTime;
             mouseClickRectangle = new Rectangle(-8888, -9999, 1, 1);
             base.Update(gameTime);
         }
@@ -216,6 +249,7 @@ namespace Scrap_Threats
             {
                 worker.Draw(spriteBatch);
             }
+
             foreach (GameObject item in gameObjects)
             {
                 item.Draw(spriteBatch);
