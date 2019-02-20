@@ -24,6 +24,7 @@ namespace Scrap_Threats
         public static int scrap;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        private List<GameObject> userInterfaceObjects;
         Texture2D background;
         List<Worker> activeWorkers = new List<Worker>();
         List<Building> buildings = new List<Building>();
@@ -104,12 +105,37 @@ namespace Scrap_Threats
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            var buyButton = new Button(content.Load<Texture2D>("Button"), content.Load<SpriteFont>("Font"), new Vector2(500, 240), "Button")
+            {
+                TextForButton = "Buy Worker",
+            };
+
+            //sets the click event for the resumeButton
+            buyButton.Click += BuyButtonClicketyClickEvent;
+
+            userInterfaceObjects = new List<GameObject>()
+            {
+                buyButton,
+                //insertNewButtonName,
+                //insertNewButtonName,
+                //insertNewButtonName,
+                //insertNewButtonName,
+            };
 
             background = Content.Load<Texture2D>("background");
             font = Content.Load<SpriteFont>("font");
             collisionTexture = Content.Load<Texture2D>("CollisionTexture");
         }
 
+        /// <summary>
+        /// Looks for the click event on the "resume" button to trigger the "unpaused" state.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BuyButtonClicketyClickEvent(object sender, EventArgs e)
+        {
+            scrap++;
+        }
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
         /// game-specific content.
@@ -128,6 +154,12 @@ namespace Scrap_Threats
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+            
+            //updates our click-events for the UI
+            foreach (var item in userInterfaceObjects)
+            {
+                item.Update(gameTime);
+            }
 
             if (Mouse.GetState().LeftButton is ButtonState.Pressed)
             {
@@ -239,7 +271,10 @@ namespace Scrap_Threats
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
             spriteBatch.Draw(background, ScreenSize, Color.White);
-
+            foreach (var item in userInterfaceObjects)
+            {
+                item.Draw(spriteBatch);
+            }
             foreach (Building building in buildings)
             {
                 building.Draw(spriteBatch);
