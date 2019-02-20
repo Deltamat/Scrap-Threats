@@ -57,6 +57,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Building.cs" />
+    <Compile Include="Button.cs" />
     <Compile Include="Farm.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="GameWorld.cs" />

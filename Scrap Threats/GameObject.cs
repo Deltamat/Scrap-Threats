@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace Scrap_Threats
         // movement fields, skal nok flyttes senere
         public Vector2 waypoint;
         public Rectangle waypointRectangle;
-
+        
 
         public GameObject(Vector2 position, string spriteName)
         {
