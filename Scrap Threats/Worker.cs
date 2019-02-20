@@ -15,6 +15,7 @@ namespace Scrap_Threats
         public int carryingScrap;
         public int carryingFood;
         bool farming = false;
+        public Thread t;
         public bool waitingForScrap;
         public bool gatheringScrap = false;
         static readonly object lockObject = new object();
@@ -28,7 +29,7 @@ namespace Scrap_Threats
             alive = true;
             GameTime gameTime = new GameTime();
             waypoint = position;
-            Thread t = new Thread(() => Update(gameTime));
+            t = new Thread(() => Update(gameTime));
             t.IsBackground = true;
             t.Start();
         }
