@@ -11,11 +11,13 @@ namespace Scrap_Threats
         Random rng = new Random();
         bool unemplyed = true;
         public bool readyToMine = true;
-        public bool mining = false;
+        public bool gatheringFood = false;
         public int carryingScrap;
         public int carryingFood;
         bool farming = false;
         public bool waitingForScrap;
+        public bool gatheringScrap = false;
+
 
         public Worker(Vector2 position, string spriteName) : base(position, spriteName)
         {
@@ -141,11 +143,11 @@ namespace Scrap_Threats
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            if (GameWorld.selectedUnit.Contains(this) && mining == false)
+            if (GameWorld.selectedUnit.Contains(this) && (gatheringFood == false || gatheringScrap == false))
             {
                 spriteBatch.Draw(sprite, Position, null, Color.Green, rotation, new Vector2(sprite.Width * 0.5f, sprite.Height * 0.5f), 1f, SpriteEffects.None, 0.1f);
             }
-            else if (mining == true)
+            else if (gatheringFood == true || gatheringScrap == true)
             {
 
             }

@@ -26,7 +26,7 @@ namespace Scrap_Threats
         SpriteBatch spriteBatch;
         private List<GameObject> userInterfaceObjects;
         Texture2D background;
-        List<Worker> activeWorkers = new List<Worker>();
+        public static List<Worker> activeWorkers = new List<Worker>();
         List<Building> buildings = new List<Building>();
         List<Button> UI = new List<Button>();
         Worker worker;
@@ -34,13 +34,17 @@ namespace Scrap_Threats
         public static Farm farm;
         private static int farmCapacity = 3;
         public static Scrapyard scrapyard;
-        Random rng = new Random();
+        public static Random rng = new Random();
         public static Rectangle mouseClickRectangle;
         Vector2 selectionBoxOrigin;
         public static HashSet<GameObject> gameObjects = new HashSet<GameObject>();
         public static List<GameObject> selectedUnit = new List<GameObject>();
         SpriteFont font;
         private Texture2D collisionTexture;
+        List<Raider> raiders = new List<Raider>();
+        Raider killRaider;
+        private double raiderAttackTimer;
+        int raiderCount = 3;
 
 
         private static ContentManager content;
@@ -259,14 +263,14 @@ namespace Scrap_Threats
 
                     if (mouseClickRectangle.Width > 10 && mouseClickRectangle.Height > 10)
                     {
-                        if (item.mining is false)
+                        if (item.gatheringScrap is false || item.gatheringFood is false)
                         {
                             selectedUnit.Add(item);
                         }
                     }
                     else
                     {
-                        if (item.mining is false)
+                        if (item.gatheringScrap is false || item.gatheringFood is false)
                         {
                             selectedUnit.RemoveRange(0, selectedUnit.Count);
                             selectedUnit.Add(item);
@@ -300,6 +304,31 @@ namespace Scrap_Threats
                 foodUpkeepTimer = 0;
             }
 
+            if (raiderAttackTimer > 30)
+            {
+                for (int i = 0; i < raiderCount; i++)
+                {
+                    raiders.Add(new Raider(new Vector2(1920, rng.Next(0,1080)), "test"));
+                }
+                raiderCount += 3;
+                raiderAttackTimer = 0;
+            }
+
+            foreach (var item in raiders)
+            {
+                item.Update(gameTime);
+                if (item.killedWorker == true)
+                {
+                    killRaider = item;
+                }
+            }
+
+            if (killRaider != null && killRaider.killedWorker == true)
+            {
+                raiders.Remove(killRaider);
+            }
+
+            raiderAttackTimer += globalGameTime;
             globalGameTime = gameTime.ElapsedGameTime.TotalSeconds;
             elapsedTime += globalGameTime;
             foodUpkeepTimer += globalGameTime;
@@ -330,6 +359,11 @@ namespace Scrap_Threats
             {
                 worker.Draw(spriteBatch);
                 DrawCollisionBox(worker);
+            }
+
+            foreach (var item in raiders)
+            {
+                item.Draw(spriteBatch);
             }
 
             //foreach (Button button in UI)
