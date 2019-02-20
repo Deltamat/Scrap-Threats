@@ -1,11 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Scrap_Threats
 {
@@ -13,10 +9,12 @@ namespace Scrap_Threats
     {
         //delegate void UpdateDelegate(GameTime gameTime);
         Random rng = new Random();
-        bool jobless = true;
+        bool unemplyed = true;
         public bool readyToMine = true;
         bool mining = false;
-        public int carrying;
+        public int carryingScrap;
+        public int carryingFood;
+        bool farming = false;
 
         public Worker(Vector2 position, string spriteName) : base(position, spriteName)
         {
@@ -41,16 +39,29 @@ namespace Scrap_Threats
                 if (waypointRectangle.Intersects(GameWorld.scrapyard.CollisionBox)) // kan nok laves om til event eventuelt
                 {
                     waypoint = GameWorld.scrapyard.Position;
-                    jobless = false;
+                    unemplyed = false;
                     waypointRectangle = new Rectangle(-1000,-1000,1,1);
                 }
                 else if (waypointRectangle != new Rectangle(-1000, -1000, 1, 1))
                 {
-                    jobless = true;
+                    unemplyed = true;
+                }
+
+                if (waypointRectangle.Intersects(GameWorld.farm.CollisionBox)) // kan nok laves om til event eventuelt
+                {
+                    waypoint = GameWorld.farm.Position;
+                    unemplyed = false;
+                    waypointRectangle = new Rectangle(-1000, -1000, 1, 1);
+                    farming = true;
+                }
+                else if (waypointRectangle != new Rectangle(-1000, -1000, 1, 1))
+                {
+                    unemplyed = true;
+                    farming = false;
                 }
 
                 // går mod waypoint og teleportere når den kommer tæt nok på for at forhindre den hopper på stedet.
-                if (jobless == true)
+                if (unemplyed == true)
                 {
                     if (Vector2.Distance(waypoint, position) < 2)
                     {
@@ -64,7 +75,7 @@ namespace Scrap_Threats
                     }
                 }
 
-                if (jobless == false)
+                if (unemplyed == false)
                 {
                     Vector2 direction = waypoint - position;
                     direction.Normalize();
@@ -75,17 +86,38 @@ namespace Scrap_Threats
                         //få tråden ind i minen/scrapyard og vente der til den er færdig
                         if (readyToMine == true)
                         {
-                            mining = true;
-                            GameWorld.scrapyard.Mining(this);
-                            mining = false;
+                            if (farming is false)
+                            {
+                                mining = true;
+                                GameWorld.scrapyard.Mining(this);
+                                mining = false;
+                            }
+                            else if (farming is true)
+                            {
+                                mining = true;
+                                GameWorld.farm.Farming(this);
+                                mining = false;
+                            }
+
                         }
                         // når den er færdig:
                         if (Vector2.Distance(position, GameWorld.stockpile.Position) < 50)
                         {
-                            waypoint = GameWorld.scrapyard.Position;
-                            readyToMine = true;
-                            GameWorld.scrap += carrying; // OPS måske skal der en lås til
-                            carrying = 0;
+                            if (farming is false)
+                            {
+                                waypoint = GameWorld.scrapyard.Position;
+                                readyToMine = true;
+                                GameWorld.scrap += carryingScrap; // OPS måske skal der en lås til
+                                carryingScrap = 0;
+                            }
+                            else
+                            {
+                                waypoint = GameWorld.farm.Position;
+                                readyToMine = true;
+                                GameWorld.food += carryingFood; // OPS måske skal der en lås til
+                                carryingFood = 0;
+                            }
+
                         }
                         else
                         {

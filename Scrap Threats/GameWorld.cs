@@ -254,6 +254,7 @@ namespace Scrap_Threats
             }
 
             spriteBatch.DrawString(font, $"Scrap: {scrap}", new Vector2(10), Color.White);
+            spriteBatch.DrawString(font, $"Food: {food}", new Vector2(10, 30), Color.White);
             spriteBatch.Draw(stockpile.Sprite, mouseClickRectangle, Color.Green);
 
             spriteBatch.End();

@@ -18,6 +18,8 @@ namespace Scrap_Threats
         public bool harvestable;
         private bool growing;
         public int harvestableFood;
+        static Semaphore FarmingSemaphore = new Semaphore(3, 3);
+        static Mutex m = new Mutex();
 
         public Farm(Vector2 position, string spriteName) : base(position, spriteName)
         {
@@ -96,6 +98,22 @@ namespace Scrap_Threats
 
                 Thread.Sleep(1);
             }
+        }
+
+        public void Farming(Worker worker)
+        {
+            FarmingSemaphore.WaitOne();
+            m.WaitOne();
+            worker.readyToMine = false;
+            if (harvestableFood > 0)
+            {
+                worker.carryingFood = 10;
+                harvestableFood -= 10;
+            }
+            m.ReleaseMutex();
+            Thread.Sleep(5000);
+            
+            FarmingSemaphore.Release();
         }
     }
 }
