@@ -41,6 +41,7 @@ namespace Scrap_Threats
         private Texture2D collisionTexture;
         Button tmpButton;
 
+
         private static ContentManager content;
         public static ContentManager ContentManager
         {
@@ -192,12 +193,19 @@ namespace Scrap_Threats
 
                     if (mouseClickRectangle.Width > 10 && mouseClickRectangle.Height > 10)
                     {
-                        selectedUnit.Add(item);
+                        if (item.mining is false)
+                        {
+                            selectedUnit.Add(item);
+                        }
                     }
                     else
                     {
-                        selectedUnit.Add(item);
-                        break;
+                        if (item.mining is false)
+                        {
+                            selectedUnit.RemoveRange(0, selectedUnit.Count);
+                            selectedUnit.Add(item);
+                        }
+                        //break;
                     }
                 }
             }

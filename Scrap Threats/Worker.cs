@@ -11,10 +11,11 @@ namespace Scrap_Threats
         Random rng = new Random();
         bool unemplyed = true;
         public bool readyToMine = true;
-        bool mining = false;
+        public bool mining = false;
         public int carryingScrap;
         public int carryingFood;
         bool farming = false;
+        public bool waitingForScrap;
 
         public Worker(Vector2 position, string spriteName) : base(position, spriteName)
         {
@@ -31,7 +32,7 @@ namespace Scrap_Threats
 
         public override void Update(GameTime gameTime)
         {
-            Thread.Sleep(200);
+            Thread.Sleep(1000);
             while (alive == true)
             {
                 // tjekker op på om waypoint er inde i scrapyard, hvis det er bliver workeren jobless = false og begynder at mine.
@@ -77,9 +78,12 @@ namespace Scrap_Threats
 
                 if (unemplyed == false)
                 {
-                    Vector2 direction = waypoint - position;
-                    direction.Normalize();
-                    position += direction * speed * (float)GameWorld.globalGameTime;
+                    if (Vector2.Distance(position, waypoint) > 45)
+                    {
+                        Vector2 direction = waypoint - position;
+                        direction.Normalize();
+                        position += direction * speed * (float)GameWorld.globalGameTime;
+                    }
 
                     if (Vector2.Distance(waypoint, position) < 50)
                     {
@@ -88,15 +92,15 @@ namespace Scrap_Threats
                         {
                             if (farming is false)
                             {
-                                mining = true;
+                                //mining = true;
                                 GameWorld.scrapyard.Mining(this);
-                                mining = false;
+                                //mining = false;
                             }
                             else if (farming is true)
                             {
-                                mining = true;
+                                //mining = true;
                                 GameWorld.farm.Farming(this);
-                                mining = false;
+                                //mining = false;
                             }
 
                         }
@@ -121,7 +125,11 @@ namespace Scrap_Threats
                         }
                         else
                         {
-                            waypoint = GameWorld.stockpile.Position;
+                            if (readyToMine == false)
+                            {
+                                waypoint = GameWorld.stockpile.Position;
+
+                            }
                         }
 
                     }
