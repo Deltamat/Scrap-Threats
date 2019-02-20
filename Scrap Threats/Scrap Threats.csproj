@@ -50,7 +50,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Icon.ico</ApplicationIcon>
+    <ApplicationIcon>Cog.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -78,6 +78,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Cog.ico" />
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>
