@@ -21,7 +21,7 @@ namespace Scrap_Threats
         private double foodUpkeepTimer;
         public static int foodUpkeep;
         public static int food = 1000;
-        public static int scrap;
+        public static int scrap = 1000;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         private List<GameObject> userInterfaceObjects;
@@ -32,6 +32,7 @@ namespace Scrap_Threats
         Worker worker;
         public static Stockpile stockpile;
         public static Farm farm;
+        private static int farmCapacity = 3;
         public static Scrapyard scrapyard;
         Random rng = new Random();
         public static Rectangle mouseClickRectangle;
@@ -40,7 +41,6 @@ namespace Scrap_Threats
         public static List<GameObject> selectedUnit = new List<GameObject>();
         SpriteFont font;
         private Texture2D collisionTexture;
-        Button tmpButton;
 
 
         private static ContentManager content;
@@ -95,7 +95,6 @@ namespace Scrap_Threats
             buildings.Add(farm);
             buildings.Add(stockpile);
             buildings.Add(scrapyard);
-            UI.Add(tmpButton);
 
             base.Initialize();
         }
@@ -108,19 +107,29 @@ namespace Scrap_Threats
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            var buyButton = new Button(content.Load<Texture2D>("Button"), content.Load<SpriteFont>("Font"), new Vector2(500, 240), "Button")
+            var buyWorkerButton = new Button(content.Load<Texture2D>("Button"), content.Load<SpriteFont>("Font"), new Vector2((int)(ScreenSize.Width), (int)(ScreenSize.Height*2)), "Button")
             {
                 TextForButton = "Buy Worker",
             };
+            var upgradeFarmAmountButton = new Button(content.Load<Texture2D>("Button"), content.Load<SpriteFont>("Font"), new Vector2((int)(ScreenSize.Width * 0.5), (int)(ScreenSize.Height * 2)), "Button")
+            {
+                TextForButton = "Upgrade Farm Amount",
+            };
+            var upgradeFarmCapacityButton = new Button(content.Load<Texture2D>("Button"), content.Load<SpriteFont>("Font"), new Vector2((int)(ScreenSize.Width * 0.5), (int)(ScreenSize.Height * 1.9)), "Button")
+            {
+                TextForButton = "Upgrade Farm Capacity",
+            };
 
             //sets the click event for the resumeButton
-            buyButton.Click += BuyButtonClicketyClickEvent;
+            buyWorkerButton.Click += BuyWorkerButtonClickEvent;
+            upgradeFarmAmountButton.Click += UpgradeFarmAmountButtonClickEvent;
+            upgradeFarmCapacityButton.Click += UpgradeFarmCapacityButtonClickEvent;
 
             userInterfaceObjects = new List<GameObject>()
             {
-                buyButton,
-                //insertNewButtonName,
-                //insertNewButtonName,
+                buyWorkerButton,
+                upgradeFarmAmountButton,
+                upgradeFarmCapacityButton,
                 //insertNewButtonName,
                 //insertNewButtonName,
             };
@@ -135,10 +144,35 @@ namespace Scrap_Threats
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void BuyButtonClicketyClickEvent(object sender, EventArgs e)
+        private void BuyWorkerButtonClickEvent(object sender, EventArgs e)
         {
-            scrap++;
+            if (food > 50)
+            {
+                activeWorkers.Add(new Worker(new Vector2((int)(ScreenSize.Width * 0.5), (int)(ScreenSize.Height * 0.5)), "test"));
+                food -= 50;
+            }
         }
+
+        private void UpgradeFarmAmountButtonClickEvent(object sender, EventArgs e)
+        {
+            if (scrap > 100)
+            {
+                farm.growthAmount += 50;
+                scrap -= 100;
+            }
+        }
+
+        private void UpgradeFarmCapacityButtonClickEvent(object sender, EventArgs e)
+        {
+            if (scrap > 250)
+            {
+                Farm.FarmingSemaphore.Release(farmCapacity);
+                farmCapacity++;                
+                Farm.FarmingSemaphore = new Semaphore(farmCapacity, farmCapacity);
+                scrap -= 250;
+            }
+        }
+
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
         /// game-specific content.
