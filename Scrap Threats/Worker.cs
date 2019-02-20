@@ -53,29 +53,5 @@ namespace Scrap_Threats
                 spriteBatch.Draw(sprite, Position, null, Color.White, rotation, new Vector2(sprite.Width * 0.5f, sprite.Height * 0.5f), 1f, SpriteEffects.None, 0.1f);
             }
         }
-   
-        public void WorkerUpdate()
-        {
-            while (position.X < 1000)
-            {
-                if (true)
-                {
-                    Vector2 direction = waypoint - position;
-                    direction.Normalize();
-                    position += direction;
-                    Thread.Sleep(5);
-                    if (Vector2.Distance(waypoint, position) < 1)
-                    {
-                        position = waypoint;
-                    }
-                }
-
-
-                if (waypointRectangle.Intersects(GameWorld.stockpile.CollisionBox))
-                {
-                    position = new Vector2(1000);
-                }
-            }
-        }
     }
 }

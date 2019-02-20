@@ -16,6 +16,7 @@ namespace Scrap_Threats
     /// </summary>
     public class GameWorld : Game
     {
+        
         public static double elapsedTime;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
@@ -29,7 +30,8 @@ namespace Scrap_Threats
         public static Rectangle mouseClickRectangle;
         public static HashSet<GameObject> gameObjects = new HashSet<GameObject>();
         public static GameObject selectedUnit;
-        
+        public static int food;
+        public static int scraps;
 
         private static ContentManager content;
         public static ContentManager ContentManager
@@ -48,6 +50,7 @@ namespace Scrap_Threats
             //Maximises
             var form = (Form)Form.FromHandle(Window.Handle);
             form.WindowState = FormWindowState.Maximized;
+            
         }
 
         /// <summary>
@@ -111,7 +114,7 @@ namespace Scrap_Threats
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            elapsedTime = gameTime.ElapsedGameTime.TotalMilliseconds;
+           
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
@@ -146,7 +149,7 @@ namespace Scrap_Threats
                     }
                 }
             }
-
+            
             foreach (Worker item in activeWorkers)
             {
                 if (item.CollisionBox.Intersects(mouseClickRectangle))
