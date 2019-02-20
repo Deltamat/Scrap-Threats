@@ -33,6 +33,7 @@ namespace Scrap_Threats
         public static Stockpile stockpile;
         public static Farm farm;
         private static int farmCapacity = 3;
+        private static int scrapyardCapacity = 3;
         public static Scrapyard scrapyard;
         public static Random rng = new Random();
         public static Rectangle mouseClickRectangle;
@@ -111,30 +112,37 @@ namespace Scrap_Threats
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            //Buttons
             var buyWorkerButton = new Button(content.Load<Texture2D>("Button"), content.Load<SpriteFont>("Font"), new Vector2((int)(ScreenSize.Width), (int)(ScreenSize.Height*2)), "Button")
             {
                 TextForButton = "Buy Worker",
             };
             var upgradeFarmAmountButton = new Button(content.Load<Texture2D>("Button"), content.Load<SpriteFont>("Font"), new Vector2((int)(ScreenSize.Width * 0.5), (int)(ScreenSize.Height * 2)), "Button")
             {
-                TextForButton = "Upgrade Farm Amount",
+                TextForButton = "Upgr. Farm Amount",
             };
             var upgradeFarmCapacityButton = new Button(content.Load<Texture2D>("Button"), content.Load<SpriteFont>("Font"), new Vector2((int)(ScreenSize.Width * 0.5), (int)(ScreenSize.Height * 1.9)), "Button")
             {
-                TextForButton = "Upgrade Farm Capacity",
+                TextForButton = "Upgr. Farm Cap.",
+            };
+            var upgradeScrapyardCapacityButton = new Button(content.Load<Texture2D>("Button"), content.Load<SpriteFont>("Font"), new Vector2((int)(ScreenSize.Width * 1.5), (int)(ScreenSize.Height * 1.9)), "Button")
+            {
+                TextForButton = "Upgr. Scrapyard Cap.",
             };
 
-            //sets the click event for the resumeButton
+            //sets the click event for the Button
             buyWorkerButton.Click += BuyWorkerButtonClickEvent;
             upgradeFarmAmountButton.Click += UpgradeFarmAmountButtonClickEvent;
             upgradeFarmCapacityButton.Click += UpgradeFarmCapacityButtonClickEvent;
+            upgradeScrapyardCapacityButton.Click += UpgradeScrapyardCapacityButtonClickEvent;
 
             userInterfaceObjects = new List<GameObject>()
             {
                 buyWorkerButton,
                 upgradeFarmAmountButton,
                 upgradeFarmCapacityButton,
-                //insertNewButtonName,
+                upgradeScrapyardCapacityButton,
                 //insertNewButtonName,
             };
 
@@ -168,11 +176,42 @@ namespace Scrap_Threats
 
         private void UpgradeFarmCapacityButtonClickEvent(object sender, EventArgs e)
         {
-            if (scrap > 250)
+            if (scrap >= 250)
             {
-                Farm.FarmingSemaphore.Release(farmCapacity);
-                farmCapacity++;                
+                while (true)
+                {
+                    try
+                    {
+                        Farm.FarmingSemaphore.Release();
+                    }
+                    catch (SemaphoreFullException)
+                    {
+                        break;
+                    }
+                }
+                farmCapacity++;
                 Farm.FarmingSemaphore = new Semaphore(farmCapacity, farmCapacity);
+                scrap -= 250;
+            }
+        }
+
+        private void UpgradeScrapyardCapacityButtonClickEvent(object sender, EventArgs e)
+        {
+            if (scrap >= 250)
+            {
+                while (true)
+                {
+                    try
+                    {
+                        Scrapyard.MiningSemaphore.Release();
+                    }
+                    catch (SemaphoreFullException)
+                    {
+                        break;
+                    }
+                }
+                scrapyardCapacity++;
+                Scrapyard.MiningSemaphore = new Semaphore(scrapyardCapacity, scrapyardCapacity);
                 scrap -= 250;
             }
         }

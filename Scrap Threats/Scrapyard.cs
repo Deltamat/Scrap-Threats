@@ -30,7 +30,14 @@ namespace Scrap_Threats
 
                 Thread.Sleep(5000);
                 worker.gatheringScrap = false;
-                MiningSemaphore.Release();
+                try
+                {
+                    MiningSemaphore.Release();
+                }
+                catch (SemaphoreFullException)
+                {
+                    
+                }
             }
             else
 	        {

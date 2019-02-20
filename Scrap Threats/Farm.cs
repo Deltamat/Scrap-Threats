@@ -110,7 +110,15 @@ namespace Scrap_Threats
                 m.ReleaseMutex();
                 Thread.Sleep(5000);
                 worker.gatheringFood = false;
-                FarmingSemaphore.Release();
+
+                try
+                {
+                    FarmingSemaphore.Release();
+                }
+                catch (SemaphoreFullException)
+                {
+                    
+                }
             }
             else
             {
