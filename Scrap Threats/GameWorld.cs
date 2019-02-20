@@ -27,6 +27,7 @@ namespace Scrap_Threats
         Texture2D background;
         List<Worker> activeWorkers = new List<Worker>();
         List<Building> buildings = new List<Building>();
+        List<Button> UI = new List<Button>();
         Worker worker;
         public static Stockpile stockpile;
         public static Farm farm;
@@ -38,7 +39,7 @@ namespace Scrap_Threats
         public static List<GameObject> selectedUnit = new List<GameObject>();
         SpriteFont font;
         private Texture2D collisionTexture;
-
+        Button tmpButton;
 
         private static ContentManager content;
         public static ContentManager ContentManager
@@ -92,6 +93,7 @@ namespace Scrap_Threats
             buildings.Add(farm);
             buildings.Add(stockpile);
             buildings.Add(scrapyard);
+            UI.Add(tmpButton);
 
             base.Initialize();
         }
@@ -155,6 +157,7 @@ namespace Scrap_Threats
                     }
                 }
             }
+            
 
             //foreach (GameObject go in gameObjects)
             //{
@@ -251,6 +254,12 @@ namespace Scrap_Threats
                 worker.Draw(spriteBatch);
                 DrawCollisionBox(worker);
             }
+
+            //foreach (Button button in UI)
+            //{
+            //    button.Draw(spriteBatch);
+            //    DrawCollisionBox(button);
+            //}
 
             spriteBatch.DrawString(font, $"Scrap: {scrap}", new Vector2(10), Color.White);
             spriteBatch.DrawString(font, $"Food: {food}", new Vector2(10, 30), Color.White);
