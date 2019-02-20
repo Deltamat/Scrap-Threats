@@ -8,14 +8,16 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Scrap_Threats
 {
-    class Raider : Unit
+    public class Raider : Unit
     {
         public bool killedWorker = false;
+        public int health;
 
         public Raider(Vector2 position, string spriteName) : base(position, spriteName)
         {
             speed = 100;
             waypoint = GameWorld.stockpile.Position;
+            health = 10;
         }
 
         public override void Update(GameTime gameTime)
@@ -33,6 +35,11 @@ namespace Scrap_Threats
                     GameWorld.activeWorkers.Remove(GameWorld.activeWorkers[deadWorker]);
                     killedWorker = true;
                 }
+            }
+
+            if (health <= 0)
+            {
+                killedWorker = true;
             }
         }
 
