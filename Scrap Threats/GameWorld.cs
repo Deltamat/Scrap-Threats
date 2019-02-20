@@ -16,22 +16,29 @@ namespace Scrap_Threats
     /// </summary>
     public class GameWorld : Game
     {
-        
+        public static double globalGameTime;
         public static double elapsedTime;
+        private double foodUpkeepTimer;
+        public static int foodUpkeep;
+        public static int food = 1000;
+        public static int scrap;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Texture2D background;
         List<Worker> activeWorkers = new List<Worker>();
         List<Building> buildings = new List<Building>();
-        Thread t;
         Worker worker;
-        public static Building stockpile;
+        public static Stockpile stockpile;
+        public static Farm farm;
+        public static Scrapyard scrapyard;
         Random rng = new Random();
         public static Rectangle mouseClickRectangle;
+        Vector2 selectionBoxOrigin;
         public static HashSet<GameObject> gameObjects = new HashSet<GameObject>();
-        public static GameObject selectedUnit;
-        public static int food;
-        public static int scraps;
+        public static List<GameObject> selectedUnit = new List<GameObject>();
+        SpriteFont font;
+        private Texture2D collisionTexture;
+
 
         private static ContentManager content;
         public static ContentManager ContentManager
@@ -50,7 +57,6 @@ namespace Scrap_Threats
             //Maximises
             var form = (Form)Form.FromHandle(Window.Handle);
             form.WindowState = FormWindowState.Maximized;
-            
         }
 
         /// <summary>
@@ -79,9 +85,13 @@ namespace Scrap_Threats
                 worker = new Worker(new Vector2(rng.Next(100, 1800), rng.Next(100, 900)), "test");
                 activeWorkers.Add(worker);
             }
-           
-            stockpile = new Building(new Vector2(960, 540), "stockpile_empty");
+
+            farm = new Farm(new Vector2(1700, 250), "farm_0");
+            stockpile = new Stockpile(new Vector2(960, 540), "stockpile_0");
+            scrapyard = new Scrapyard(new Vector2(200, 540), "junkpile");
+            buildings.Add(farm);
             buildings.Add(stockpile);
+            buildings.Add(scrapyard);
 
             base.Initialize();
         }
@@ -95,7 +105,9 @@ namespace Scrap_Threats
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            background = Content.Load<Texture2D>("background");            
+            background = Content.Load<Texture2D>("background");
+            font = Content.Load<SpriteFont>("font");
+            collisionTexture = Content.Load<Texture2D>("CollisionTexture");
         }
 
         /// <summary>
@@ -114,51 +126,106 @@ namespace Scrap_Threats
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-           
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
             if (Mouse.GetState().LeftButton is ButtonState.Pressed)
             {
-                mouseClickRectangle = new Rectangle(Mouse.GetState().Position.X, Mouse.GetState().Position.Y, 1, 1);
-                selectedUnit = null;
-            }
 
+                if (selectionBoxOrigin == new Vector2(-100))
+                {
+                    selectionBoxOrigin = new Vector2(Mouse.GetState().Position.X, Mouse.GetState().Position.Y);
+                    selectedUnit.RemoveRange(0, selectedUnit.Count);
+                }
+
+                mouseClickRectangle = new Rectangle((int)selectionBoxOrigin.X, (int)selectionBoxOrigin.Y, (int)(Mouse.GetState().Position.X - selectionBoxOrigin.X), (int)(Mouse.GetState().Position.Y - selectionBoxOrigin.Y));
+            }
+            else
+            {
+                selectionBoxOrigin = new Vector2(-100);
+            }
             if (Mouse.GetState().RightButton is ButtonState.Pressed)
             {
-                if (selectedUnit != null)
+                if (selectedUnit.Count > 0)
                 {
-                    selectedUnit.waypoint = new Vector2(Mouse.GetState().Position.X, Mouse.GetState().Position.Y);
-                    selectedUnit.waypointRectangle = new Rectangle((int)selectedUnit.waypoint.X, (int)selectedUnit.waypoint.Y, 1, 1);
-                }
-            }
-
-            foreach (GameObject go in gameObjects)
-            {
-                //go.Update(gameTime);
-                if (go.CollisionBox.Intersects(mouseClickRectangle) && go is Worker)
-                {
-                    selectedUnit = go;
-                }
-
-                foreach (GameObject other in gameObjects)
-                {
-                    if (go != other && go.IsColliding(other))
+                    foreach (var item in selectedUnit)
                     {
-                        go.DoCollision(other);
+                        item.waypoint = new Vector2(Mouse.GetState().Position.X, Mouse.GetState().Position.Y);
+                        item.waypointRectangle = new Rectangle((int)item.waypoint.X, (int)item.waypoint.Y, 1, 1);
                     }
                 }
             }
-            
+
+            //foreach (GameObject go in gameObjects)
+            //{
+            //    //go.Update(gameTime);
+            //    if (go.CollisionBox.Intersects(mouseClickRectangle) && go is Worker)
+            //    {
+            //        if (mouseClickRectangle.Width > 10 && mouseClickRectangle.Height > 10)
+            //        {
+            //            selectedUnit.Add(go);
+            //        }
+            //        else
+            //        {
+            //            selectedUnit.Add(go);
+            //            break;
+            //        }
+            //    }
+
+            //    foreach (GameObject other in gameObjects)
+            //    {
+            //        if (go != other && go.IsColliding(other))
+            //        {
+            //            go.DoCollision(other);
+            //        }
+            //    }
+            //}
+
             foreach (Worker item in activeWorkers)
             {
                 if (item.CollisionBox.Intersects(mouseClickRectangle))
                 {
-                    selectedUnit = item;
+                    //selectedUnit.Add(item);
+
+                    if (mouseClickRectangle.Width > 10 && mouseClickRectangle.Height > 10)
+                    {
+                        selectedUnit.Add(item);
+                    }
+                    else
+                    {
+                        selectedUnit.Add(item);
+                        break;
+                    }
                 }
             }
+                        
+            //Food upkeep, 60 sec timer
+            if (foodUpkeepTimer >= 60)
+            {                
+                if (food > foodUpkeep) //'Pays' upkeep
+                {
+                    food -= foodUpkeep;
+                }
+                else //Workers 'starve' to death
+                {
+                    int missingFood = foodUpkeep - food;
+                    food = 0;
+                    for (int i = 0; i < missingFood; i++) //For every piece of missing food, kill one worker
+                    {
+                        int deadWorker = rng.Next(0, activeWorkers.Count); //Picks a random worker
+                        if (activeWorkers.Count > 0) //Ensures that there are workers to kill
+                        {
+                            activeWorkers[deadWorker].alive = false;
+                            activeWorkers.Remove(activeWorkers[deadWorker]);
+                        }                       
+                    }
+                }
+                foodUpkeepTimer = 0;
+            }
 
-            elapsedTime = gameTime.ElapsedGameTime.TotalSeconds;
+            globalGameTime = gameTime.ElapsedGameTime.TotalSeconds;
+            elapsedTime += globalGameTime;
+            foodUpkeepTimer += globalGameTime;
             mouseClickRectangle = new Rectangle(-8888, -9999, 1, 1);
             base.Update(gameTime);
         }
@@ -176,16 +243,17 @@ namespace Scrap_Threats
             foreach (Building building in buildings)
             {
                 building.Draw(spriteBatch);
+                DrawCollisionBox(building);
             }
 
             foreach (Worker worker in activeWorkers)
             {
                 worker.Draw(spriteBatch);
+                DrawCollisionBox(worker);
             }
-            foreach (GameObject item in gameObjects)
-            {
-                item.Draw(spriteBatch);
-            }
+
+            spriteBatch.DrawString(font, $"Scrap: {scrap}", new Vector2(10), Color.White);
+            spriteBatch.Draw(stockpile.Sprite, mouseClickRectangle, Color.Green);
 
             spriteBatch.End();
             base.Draw(gameTime);
@@ -197,6 +265,20 @@ namespace Scrap_Threats
             {
                 worker.Update(gameTime);
             }
+        }
+
+        private void DrawCollisionBox(GameObject go)
+        {
+            Rectangle collisionBox = go.CollisionBox;
+            Rectangle topLine = new Rectangle(collisionBox.X, collisionBox.Y, collisionBox.Width, 1);
+            Rectangle bottomLine = new Rectangle(collisionBox.X, collisionBox.Y + collisionBox.Height, collisionBox.Width, 1);
+            Rectangle rightLine = new Rectangle(collisionBox.X + collisionBox.Width, collisionBox.Y, 1, collisionBox.Height);
+            Rectangle leftLine = new Rectangle(collisionBox.X, collisionBox.Y, 1, collisionBox.Height);
+
+            spriteBatch.Draw(collisionTexture, topLine, null, Color.Red, 0, Vector2.Zero, SpriteEffects.None, 1);
+            spriteBatch.Draw(collisionTexture, bottomLine, null, Color.Red, 0, Vector2.Zero, SpriteEffects.None, 1);
+            spriteBatch.Draw(collisionTexture, rightLine, null, Color.Red, 0, Vector2.Zero, SpriteEffects.None, 1);
+            spriteBatch.Draw(collisionTexture, leftLine, null, Color.Red, 0, Vector2.Zero, SpriteEffects.None, 1);
         }
     }
 }
