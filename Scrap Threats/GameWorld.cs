@@ -229,14 +229,14 @@ namespace Scrap_Threats
 
                     if (mouseClickRectangle.Width > 10 && mouseClickRectangle.Height > 10)
                     {
-                        if (item.mining is false)
+                        if (item.gatheringScrap is false || item.gatheringFood is false)
                         {
                             selectedUnit.Add(item);
                         }
                     }
                     else
                     {
-                        if (item.mining is false)
+                        if (item.gatheringScrap is false || item.gatheringFood is false)
                         {
                             selectedUnit.RemoveRange(0, selectedUnit.Count);
                             selectedUnit.Add(item);

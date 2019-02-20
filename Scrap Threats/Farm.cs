@@ -104,7 +104,7 @@ namespace Scrap_Threats
         {
             if (FarmingSemaphore.WaitOne(1))
             {
-                worker.mining = true;
+                worker.gatheringFood = true;
                 m.WaitOne();
                 worker.readyToMine = false;
                 if (harvestableFood > 0)
@@ -114,7 +114,7 @@ namespace Scrap_Threats
                 }
                 m.ReleaseMutex();
                 Thread.Sleep(5000);
-                worker.mining = false;
+                worker.gatheringFood = false;
                 FarmingSemaphore.Release();
             }
             else
