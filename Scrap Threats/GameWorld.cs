@@ -28,6 +28,7 @@ namespace Scrap_Threats
         Texture2D background;
         List<Worker> activeWorkers = new List<Worker>();
         List<Building> buildings = new List<Building>();
+        List<Button> UI = new List<Button>();
         Worker worker;
         public static Stockpile stockpile;
         public static Farm farm;
@@ -39,6 +40,7 @@ namespace Scrap_Threats
         public static List<GameObject> selectedUnit = new List<GameObject>();
         SpriteFont font;
         private Texture2D collisionTexture;
+        Button tmpButton;
 
 
         private static ContentManager content;
@@ -93,6 +95,7 @@ namespace Scrap_Threats
             buildings.Add(farm);
             buildings.Add(stockpile);
             buildings.Add(scrapyard);
+            UI.Add(tmpButton);
 
             base.Initialize();
         }
@@ -187,6 +190,7 @@ namespace Scrap_Threats
                     }
                 }
             }
+            
 
             //foreach (GameObject go in gameObjects)
             //{
@@ -221,12 +225,19 @@ namespace Scrap_Threats
 
                     if (mouseClickRectangle.Width > 10 && mouseClickRectangle.Height > 10)
                     {
-                        selectedUnit.Add(item);
+                        if (item.mining is false)
+                        {
+                            selectedUnit.Add(item);
+                        }
                     }
                     else
                     {
-                        selectedUnit.Add(item);
-                        break;
+                        if (item.mining is false)
+                        {
+                            selectedUnit.RemoveRange(0, selectedUnit.Count);
+                            selectedUnit.Add(item);
+                        }
+                        //break;
                     }
                 }
             }
@@ -287,7 +298,14 @@ namespace Scrap_Threats
                 DrawCollisionBox(worker);
             }
 
+            //foreach (Button button in UI)
+            //{
+            //    button.Draw(spriteBatch);
+            //    DrawCollisionBox(button);
+            //}
+
             spriteBatch.DrawString(font, $"Scrap: {scrap}", new Vector2(10), Color.White);
+            spriteBatch.DrawString(font, $"Food: {food}", new Vector2(10, 30), Color.White);
             spriteBatch.Draw(stockpile.Sprite, mouseClickRectangle, Color.Green);
 
             spriteBatch.End();

@@ -21,12 +21,24 @@ namespace Scrap_Threats
 
         public void Mining(Worker worker)
         {
-            MiningSemaphore.WaitOne();
-            worker.readyToMine = false;
-            worker.carrying = 10;
+
+            if (MiningSemaphore.WaitOne(1))
+            {
+                worker.mining = true;
+                worker.readyToMine = false;
+                worker.carryingScrap = 10;
+
+                Thread.Sleep(5000);
+                worker.mining = false;
+                MiningSemaphore.Release();
+            }
+            else
+	        {
+
+            }
             
-            Thread.Sleep(5000);
-            MiningSemaphore.Release();
+            
+
         }
 
         public override void Draw(SpriteBatch spriteBatch)
