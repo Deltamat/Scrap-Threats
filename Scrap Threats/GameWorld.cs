@@ -129,7 +129,6 @@ namespace Scrap_Threats
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-
             if (Mouse.GetState().LeftButton is ButtonState.Pressed)
             {
 
@@ -254,6 +253,7 @@ namespace Scrap_Threats
             }
 
             spriteBatch.DrawString(font, $"Scrap: {scrap}", new Vector2(10), Color.White);
+            spriteBatch.DrawString(font, $"Food: {food}", new Vector2(10, 30), Color.White);
             spriteBatch.Draw(stockpile.Sprite, mouseClickRectangle, Color.Green);
 
             spriteBatch.End();

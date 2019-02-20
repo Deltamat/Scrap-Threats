@@ -23,7 +23,7 @@ namespace Scrap_Threats
         {
             MiningSemaphore.WaitOne();
             worker.readyToMine = false;
-            worker.carrying = 10;
+            worker.carryingScrap = 10;
             
             Thread.Sleep(5000);
             MiningSemaphore.Release();
