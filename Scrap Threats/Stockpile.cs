@@ -18,6 +18,23 @@ namespace Scrap_Threats
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            if (GameWorld.scrap == 0) //No scrap
+            {
+                sprite = GameWorld.ContentManager.Load<Texture2D>("stockpile_0");
+            }
+            else if (GameWorld.scrap > 0 && GameWorld.scrap <= 250) //Some scrap
+            {
+                sprite = GameWorld.ContentManager.Load<Texture2D>("stockpile_1");
+            }
+            else if (GameWorld.scrap > 250 && GameWorld.scrap <= 500) //Medium scrap
+            {
+                sprite = GameWorld.ContentManager.Load<Texture2D>("stockpile_2");
+            }
+            else if (GameWorld.scrap > 500) //Lots of scrap
+            {
+                sprite = GameWorld.ContentManager.Load<Texture2D>("stockpile_3");
+            }
+
             spriteBatch.Draw(sprite, Position, null, Color.White, rotation, new Vector2(sprite.Width * 0.5f, sprite.Height * 0.5f), scale, SpriteEffects.None, 0.1f);
         }
 
