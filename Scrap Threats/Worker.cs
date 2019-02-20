@@ -18,6 +18,7 @@ namespace Scrap_Threats
         public Thread t;
         public bool waitingForScrap;
         public bool gatheringScrap = false;
+        static readonly object lockObject = new object();
 
 
         public Worker(Vector2 position, string spriteName) : base(position, spriteName)
@@ -102,7 +103,10 @@ namespace Scrap_Threats
                             else if (farming is true)
                             {
                                 //mining = true;
-                                GameWorld.farm.Farming(this);
+                                if (GameWorld.farm.harvestable == true)
+                                {
+                                    GameWorld.farm.Farming(this);
+                                }
                                 //mining = false;
                             }
 
@@ -110,18 +114,25 @@ namespace Scrap_Threats
                         // når den er færdig:
                         if (Vector2.Distance(position, GameWorld.stockpile.Position) < 50)
                         {
+                            
                             if (farming is false)
                             {
                                 waypoint = GameWorld.scrapyard.Position;
                                 readyToMine = true;
-                                GameWorld.scrap += carryingScrap; // OPS måske skal der en lås til
+                                lock (lockObject)
+                                {
+                                    GameWorld.scrap += carryingScrap; // OPS måske skal der en lås til
+                                }
                                 carryingScrap = 0;
                             }
                             else
                             {
                                 waypoint = GameWorld.farm.Position;
                                 readyToMine = true;
-                                GameWorld.food += carryingFood; // OPS måske skal der en lås til
+                                lock (lockObject)
+                                {
+                                    GameWorld.food += carryingFood; // OPS måske skal der en lås til
+                                }
                                 carryingFood = 0;
                             }
 

@@ -42,10 +42,11 @@ namespace Scrap_Threats
         public static List<GameObject> selectedUnit = new List<GameObject>();
         SpriteFont font;
         private Texture2D collisionTexture;
-        List<Raider> raiders = new List<Raider>();
+        public static List<Raider> raiders = new List<Raider>();
         Raider killRaider;
         private double raiderAttackTimer;
         int raiderCount = 3;
+        public static List<Guard> guards = new List<Guard>();
 
 
         private static ContentManager content;
@@ -100,6 +101,8 @@ namespace Scrap_Threats
             buildings.Add(farm);
             buildings.Add(stockpile);
             buildings.Add(scrapyard);
+
+            guards.Add(new Guard(new Vector2(500), "test"));
 
             base.Initialize();
         }
@@ -318,7 +321,22 @@ namespace Scrap_Threats
                     }
                 }
             }
-                        
+            foreach (Guard item in guards)
+            {
+                if (item.CollisionBox.Intersects(mouseClickRectangle))
+                {
+                    if (mouseClickRectangle.Width > 10 && mouseClickRectangle.Height > 10)
+                    {
+                        selectedUnit.Add(item);
+                    }
+                    else
+                    {
+                        selectedUnit.RemoveRange(0, selectedUnit.Count);
+                        selectedUnit.Add(item);
+                    }
+                }
+            }
+
             //Food upkeep, 60 sec timer
             if (foodUpkeepTimer >= 60)
             {                
@@ -367,6 +385,11 @@ namespace Scrap_Threats
                 raiders.Remove(killRaider);
             }
 
+            foreach (var item in guards)
+            {
+                item.Update(gameTime);
+            }
+
             raiderAttackTimer += globalGameTime;
             globalGameTime = gameTime.ElapsedGameTime.TotalSeconds;
             elapsedTime += globalGameTime;
@@ -401,6 +424,11 @@ namespace Scrap_Threats
             }
 
             foreach (var item in raiders)
+            {
+                item.Draw(spriteBatch);
+            }
+
+            foreach (var item in guards)
             {
                 item.Draw(spriteBatch);
             }
