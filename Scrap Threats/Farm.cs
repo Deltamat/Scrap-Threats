@@ -102,18 +102,25 @@ namespace Scrap_Threats
 
         public void Farming(Worker worker)
         {
-            FarmingSemaphore.WaitOne();
-            m.WaitOne();
-            worker.readyToMine = false;
-            if (harvestableFood > 0)
+            if (FarmingSemaphore.WaitOne(1))
             {
-                worker.carryingFood = 10;
-                harvestableFood -= 10;
+                worker.mining = true;
+                m.WaitOne();
+                worker.readyToMine = false;
+                if (harvestableFood > 0)
+                {
+                    worker.carryingFood = 10;
+                    harvestableFood -= 10;
+                }
+                m.ReleaseMutex();
+                Thread.Sleep(5000);
+                worker.mining = false;
+                FarmingSemaphore.Release();
             }
-            m.ReleaseMutex();
-            Thread.Sleep(5000);
-            
-            FarmingSemaphore.Release();
+            else
+            {
+
+            }
         }
     }
 }
