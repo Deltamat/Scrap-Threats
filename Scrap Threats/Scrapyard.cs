@@ -44,7 +44,7 @@ namespace Scrap_Threats
             // The worker waits for access to the semaphore. If there is room the thread enters. 
             // If there is not the thread waits for 1 milisecond and then skips the semaphore and exits.
             // This ensures that the thread does not get stuck waiting for access and the player can move the 
-            // workerthread to other tasks because the thread is not Sleep until it gets access.
+            // worker-thread to other tasks because the thread is not asleep while waiting to get access.
             if (MiningSemaphore.WaitOne(1))
             {
                 worker.gatheringScrap = true;

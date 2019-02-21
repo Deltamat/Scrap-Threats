@@ -42,8 +42,7 @@ namespace Scrap_Threats
         public static List<GameObject> selectedUnit = new List<GameObject>();
         SpriteFont font;
         private Texture2D collisionTexture;
-        public static List<Raider> raiders = new List<Raider>();
-        //Raider killRaider;
+        public static List<Raider> raiders = new List<Raider>();        
         private double raiderAttackTimer;
         int raiderCount = 3;
         public static List<Guard> guards = new List<Guard>();
@@ -62,6 +61,9 @@ namespace Scrap_Threats
             }
         }
 
+        /// <summary>
+        /// constructor
+        /// </summary>
         public GameWorld()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -93,6 +95,7 @@ namespace Scrap_Threats
         {
             GameTime gameTime = new GameTime();
             IsMouseVisible = true;
+            
             for (int i = 0; i < 3; i++)
             {
                 worker = new Worker(new Vector2(rng.Next(100, 1800), rng.Next(100, 900)), "Spritesheet Walk");
@@ -142,13 +145,14 @@ namespace Scrap_Threats
                 TextForButton = "Buy Guard",
             };
 
-            //sets the click event for the Button
+            //sets a click event for each Button
             buyWorkerButton.Click += BuyWorkerButtonClickEvent;
             upgradeFarmAmountButton.Click += UpgradeFarmAmountButtonClickEvent;
             upgradeFarmCapacityButton.Click += UpgradeFarmCapacityButtonClickEvent;
             upgradeScrapyardCapacityButton.Click += UpgradeScrapyardCapacityButtonClickEvent;
             buyGuardButton.Click += BuyGuardButtonClickEvent;
 
+            //List of our buttons
             userInterfaceObjects = new List<GameObject>()
             {
                 buyWorkerButton,
@@ -164,7 +168,7 @@ namespace Scrap_Threats
         }
 
         /// <summary>
-        /// Looks for the click event on the "resume" button to trigger the "unpaused" state.
+        /// Looks for the click event for the button which this event was added to.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -180,6 +184,11 @@ namespace Scrap_Threats
             }
         }
 
+        /// <summary>
+        /// Looks for the click event for the button which this event was added to.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void UpgradeFarmAmountButtonClickEvent(object sender, EventArgs e)
         {
             if (scrap >= 100)
@@ -192,6 +201,11 @@ namespace Scrap_Threats
             }
         }
 
+        /// <summary>
+        /// Looks for the click event for the button which this event was added to.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void UpgradeFarmCapacityButtonClickEvent(object sender, EventArgs e)
         {
             if (scrap >= 250)
@@ -217,6 +231,11 @@ namespace Scrap_Threats
             }
         }
 
+        /// <summary>
+        /// Looks for the click event for the button which this event was added to.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void UpgradeScrapyardCapacityButtonClickEvent(object sender, EventArgs e)
         {
             if (scrap >= 250)
@@ -242,6 +261,11 @@ namespace Scrap_Threats
             }
         }
 
+        /// <summary>
+        /// Looks for the click event for the button which this event was added to.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BuyGuardButtonClickEvent(object sender, EventArgs e)
         {
             if (food >= 10 && scrap >= 25)
@@ -281,6 +305,7 @@ namespace Scrap_Threats
                 item.Update(gameTime);
             }
 
+            //Updates the rectangle for selecting units
             if (Mouse.GetState().LeftButton is ButtonState.Pressed)
             {
                 if (selectionBoxOrigin == new Vector2(-100))
@@ -306,39 +331,12 @@ namespace Scrap_Threats
                     }
                 }
             }
-            
 
-            //foreach (GameObject go in gameObjects)
-            //{
-            //    //go.Update(gameTime);
-            //    if (go.CollisionBox.Intersects(mouseClickRectangle) && go is Worker)
-            //    {
-            //        if (mouseClickRectangle.Width > 10 && mouseClickRectangle.Height > 10)
-            //        {
-            //            selectedUnit.Add(go);
-            //        }
-            //        else
-            //        {
-            //            selectedUnit.Add(go);
-            //            break;
-            //        }
-            //    }
-
-            //    foreach (GameObject other in gameObjects)
-            //    {
-            //        if (go != other && go.IsColliding(other))
-            //        {
-            //            go.DoCollision(other);
-            //        }
-            //    }
-            //}
-
+            //selects all the units that intersects with the rectangle generated above.
             foreach (Worker item in workers)
             {
                 if (item.CollisionBox.Intersects(mouseClickRectangle))
                 {
-                    //selectedUnit.Add(item);
-
                     if (mouseClickRectangle.Width > 10 && mouseClickRectangle.Height > 10)
                     {
                         if (item.gatheringScrap is false || item.gatheringFood is false)
@@ -346,6 +344,8 @@ namespace Scrap_Threats
                             selectedUnit.Add(item);
                         }
                     }
+                    //Checks if the rectangle is so small that you're only trying to select one unit and selects the top unit, 
+                    //which is the last unit in the list that is drawn.
                     else
                     {
                         if (item.gatheringScrap is false || item.gatheringFood is false)
@@ -353,25 +353,10 @@ namespace Scrap_Threats
                             selectedUnit.RemoveRange(0, selectedUnit.Count);
                             selectedUnit.Add(item);
                         }
-                        //break;
                     }
                 }
             }
-            foreach (Guard item in guards)
-            {
-                if (item.CollisionBox.Intersects(mouseClickRectangle))
-                {
-                    if (mouseClickRectangle.Width > 10 && mouseClickRectangle.Height > 10)
-                    {
-                        selectedUnit.Add(item);
-                    }
-                    else
-                    {
-                        selectedUnit.RemoveRange(0, selectedUnit.Count);
-                        selectedUnit.Add(item);
-                    }
-                }
-            }
+          
 
             //Food upkeep, 60 sec timer
             if (foodUpkeepTimer >= 60)
@@ -410,11 +395,12 @@ namespace Scrap_Threats
                 foodUpkeepTimer = 0;
             }
 
+            //removes dead workers
             foreach (var item in deadWorkers)
             {
                 workers.Remove(item);
             }
-
+            //removes dead guards
             foreach (var item in deadGuards)
             {
                 guards.Remove(item);
@@ -423,6 +409,7 @@ namespace Scrap_Threats
             deadWorkers.Clear();
             deadGuards.Clear();
 
+            //spawns raiders every 30 seconds.
             if (raiderAttackTimer > 30)
             {
                 for (int i = 0; i < raiderCount; i++)
@@ -433,26 +420,8 @@ namespace Scrap_Threats
                 raiderAttackTimer = 0;
                 waveCount++;
             }
-
-            //foreach (var item in raiders)
-            //{
-            //    //item.Update(gameTime);
-            //    if (item.killedWorker == true)
-            //    {
-            //        killRaider = item;
-            //    }
-            //}
-
-            //if (killRaider != null && killRaider.killedWorker == true)
-            //{
-            //    raiders.Remove(killRaider);
-            //}
-
-            //foreach (var item in guards)
-            //{
-            //    item.Update(gameTime);
-            //}
-
+            
+            //counts the time spent working inside the scrapyard or farm for each worker
             foreach (var item in workers)
             {
                 if (item.gatheringFood is true || item.gatheringScrap is true)
@@ -478,10 +447,13 @@ namespace Scrap_Threats
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
             spriteBatch.Draw(background, ScreenSize, Color.White);
+            //Draws all the buttons of the UI
             foreach (var item in userInterfaceObjects)
             {
                 item.Draw(spriteBatch);
             }
+
+            //Draws all the buldings
             foreach (Building building in buildings)
             {
                 building.Draw(spriteBatch);
@@ -489,7 +461,7 @@ namespace Scrap_Threats
                 DrawCollisionBox(building);
 #endif
             }
-
+            //Draws all the workers
             foreach (Worker worker in workers)
             {
                 worker.Draw(spriteBatch);
@@ -497,28 +469,31 @@ namespace Scrap_Threats
                 DrawCollisionBox(worker);
 #endif
             }
-
+            //Draws the bad guys
             foreach (var item in raiders)
             {
                 item.Draw(spriteBatch);
             }
-
+            //Draws the good guys
             foreach (var item in guards)
             {
                 item.Draw(spriteBatch);
             }
-            
+            //Draws some more UI giving the user some valuable information
             spriteBatch.DrawString(font, $"Scrap: {scrap}", new Vector2(10), Color.White);
             spriteBatch.DrawString(font, $"Food: {food}", new Vector2(10, 30), Color.White);
             spriteBatch.DrawString(font, $"Upkeep timer: {(int)(60 - foodUpkeepTimer)}", new Vector2(10, 50), Color.White);
             spriteBatch.DrawString(font, $"Current upkeep: {foodUpkeep}", new Vector2(10, 70), Color.White);
             spriteBatch.DrawString(font, $"Raider timer: {(int)(30-raiderAttackTimer)}", new Vector2(10, 90), Color.White);
-            //spriteBatch.Draw(stockpile.Sprite, mouseClickRectangle, Color.Green);
+            
+            //variables used in below foreach loop
             int workersInScrap = 0;
             int workersInFood = 0;
+
+            //Uses the two variables above to stack the text if more than one worker is
+            //inside the scrapyard and/or farm at the same time.
             foreach (var item in workers)
             {
-
                 if (item.gatheringScrap is true)
                 {
                     spriteBatch.DrawString(font, $"Worker gathering scrap: Time left: {(int)Math.Abs(item.miningTimer - 5)}", new Vector2(scrapyard.Position.X - 120, scrapyard.Position.Y - 115 - 20 * workersInScrap), Color.White);
@@ -532,9 +507,15 @@ namespace Scrap_Threats
             }
 
             spriteBatch.End();
+
             base.Draw(gameTime);
         }
+        
 
+        /// <summary>
+        /// Draws collision boxes
+        /// </summary>
+        /// <param name="go"></param>
         private void DrawCollisionBox(GameObject go)
         {
             Rectangle collisionBox = go.CollisionBox;
