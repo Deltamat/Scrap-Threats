@@ -129,7 +129,7 @@ namespace Scrap_Threats
                                 readyToMine = true;
                                 lock (lockObject)
                                 {
-                                    GameWorld.scrap += carryingScrap; // OPS måske skal der en lås til
+                                    GameWorld.scrap += carryingScrap;
                                 }
                                 carryingScrap = 0;
                             }
@@ -139,7 +139,7 @@ namespace Scrap_Threats
                                 readyToMine = true;
                                 lock (lockObject)
                                 {
-                                    GameWorld.food += carryingFood; // OPS måske skal der en lås til
+                                    GameWorld.food += carryingFood;
                                 }
                                 carryingFood = 0;
                             }
