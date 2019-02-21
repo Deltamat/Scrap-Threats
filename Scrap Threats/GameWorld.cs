@@ -369,7 +369,7 @@ namespace Scrap_Threats
             }
             
 
-            if (raiderAttackTimer > 3)
+            if (raiderAttackTimer > 30)
             {
                 for (int i = 0; i < raiderCount; i++)
                 {
