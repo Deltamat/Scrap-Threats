@@ -24,7 +24,7 @@ namespace Scrap_Threats
 
         public Worker(Vector2 position, string spriteName) : base(position, spriteName)
         {
-            foodUpkeep = 1;
+            foodUpkeep = 2;
             speed = 30;
             GameWorld.foodUpkeep += this.foodUpkeep;
             alive = true;

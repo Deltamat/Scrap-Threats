@@ -11,7 +11,7 @@ namespace Scrap_Threats
 {
     public class Guard : Unit
     {
-        private float distance;
+        //private float distance;
         private float targetDistance;
         private Raider target;
         int damage;
@@ -23,6 +23,7 @@ namespace Scrap_Threats
         {
             speed = 40f;
             targetDistance = 10000;
+            foodUpkeep = 3;
             damage = 5;
             alive = true;
             GameTime gameTime = new GameTime();

@@ -26,7 +26,7 @@ namespace Scrap_Threats
         SpriteBatch spriteBatch;
         private List<GameObject> userInterfaceObjects;
         Texture2D background;
-        public static List<Worker> activeWorkers = new List<Worker>();
+        public static List<Worker> workers = new List<Worker>();
         List<Building> buildings = new List<Building>();
         List<Button> UI = new List<Button>();
         Worker worker;
@@ -43,12 +43,12 @@ namespace Scrap_Threats
         SpriteFont font;
         private Texture2D collisionTexture;
         public static List<Raider> raiders = new List<Raider>();
-        Raider killRaider;
+        //Raider killRaider;
         private double raiderAttackTimer;
         int raiderCount = 3;
         public static List<Guard> guards = new List<Guard>();
         public static List<Worker> deadWorkers = new List<Worker>();
-
+        public static List<Guard> deadGuards = new List<Guard>();       
 
         private static ContentManager content;
         public static ContentManager ContentManager
@@ -93,7 +93,7 @@ namespace Scrap_Threats
             for (int i = 0; i < 3; i++)
             {
                 worker = new Worker(new Vector2(rng.Next(100, 1800), rng.Next(100, 900)), "test");
-                activeWorkers.Add(worker);
+                workers.Add(worker);
             }
 
             farm = new Farm(new Vector2(1700, 250), "farm_0");
@@ -169,7 +169,7 @@ namespace Scrap_Threats
         {
             if (food >= 50)
             {
-                activeWorkers.Add(new Worker(new Vector2((int)(ScreenSize.Width * 0.5), (int)(ScreenSize.Height * 0.5)), "test"));
+                workers.Add(new Worker(new Vector2((int)(ScreenSize.Width * 0.5), (int)(ScreenSize.Height * 0.5)), "test"));
                 lock (Worker.lockObject)
                 {
                     food -= 50;
@@ -244,7 +244,7 @@ namespace Scrap_Threats
             if (food >= 10 && scrap >= 25)
             {
                 guards.Add(new Guard(new Vector2((int)(ScreenSize.Width * 0.5), (int)(ScreenSize.Height * 0.5)), "test"));
-                deadWorkers.Add(activeWorkers[rng.Next(0,activeWorkers.Count)]);
+                deadWorkers.Add(workers[rng.Next(0,workers.Count)]);
                 lock (Worker.lockObject)
                 {
                 food -= 10;
@@ -331,7 +331,7 @@ namespace Scrap_Threats
             //    }
             //}
 
-            foreach (Worker item in activeWorkers)
+            foreach (Worker item in workers)
             {
                 if (item.CollisionBox.Intersects(mouseClickRectangle))
                 {
@@ -384,13 +384,25 @@ namespace Scrap_Threats
                     food = 0;
                     for (int i = 0; i < missingFood; i++) //For every piece of missing food, kill one worker
                     {
-                        int deadWorker = rng.Next(0, activeWorkers.Count); //Picks a random worker
-                        if (activeWorkers.Count > 0) //Ensures that there are workers to kill
-                        {
-                            activeWorkers[deadWorker].alive = false;
-                            deadWorkers.Add(activeWorkers[deadWorker]);
-                            //activeWorkers.Remove(activeWorkers[deadWorker]);
-                        }                       
+                        int totalUnitCountF = workers.Count + guards.Count;
+                        if (rng.Next(0, totalUnitCountF) <= workers.Count) 
+                        {                            
+                            if (workers.Count > 0) //Ensures that there are workers to kill
+                            {
+                                int deadWorker = rng.Next(0, workers.Count); //Picks a random worker
+                                workers[deadWorker].alive = false;
+                                deadWorkers.Add(workers[deadWorker]);
+                            }
+                        }
+                        else
+                        {                          
+                            if (guards.Count > 0) //Ensures that there are guards to kill
+                            {
+                                int deadGuard = rng.Next(0, guards.Count); //Picks a random worker
+                                guards[deadGuard].alive = false;
+                                deadGuards.Add(guards[deadGuard]);
+                            }
+                        }                     
                     }
                 }
                 foodUpkeepTimer = 0;
@@ -398,9 +410,16 @@ namespace Scrap_Threats
 
             foreach (var item in deadWorkers)
             {
-                activeWorkers.Remove(item);
+                workers.Remove(item);
             }
-            
+
+            foreach (var item in deadGuards)
+            {
+                guards.Remove(item);
+            }
+
+            deadWorkers.Clear();
+            deadGuards.Clear();
 
             if (raiderAttackTimer > 30)
             {
@@ -431,7 +450,7 @@ namespace Scrap_Threats
             //    item.Update(gameTime);
             //}
 
-            foreach (var item in activeWorkers)
+            foreach (var item in workers)
             {
                 if (item.gatheringFood is true || item.gatheringScrap is true)
                 {
@@ -466,7 +485,7 @@ namespace Scrap_Threats
                 DrawCollisionBox(building);
             }
 
-            foreach (Worker worker in activeWorkers)
+            foreach (Worker worker in workers)
             {
                 worker.Draw(spriteBatch);
                 DrawCollisionBox(worker);
@@ -490,11 +509,13 @@ namespace Scrap_Threats
             
             spriteBatch.DrawString(font, $"Scrap: {scrap}", new Vector2(10), Color.White);
             spriteBatch.DrawString(font, $"Food: {food}", new Vector2(10, 30), Color.White);
-            spriteBatch.DrawString(font, $"Upkeep timer: {(int)(60-foodUpkeepTimer)}", new Vector2(10, 50), Color.White);
+            spriteBatch.DrawString(font, $"Upkeep timer: {(int)(60 - foodUpkeepTimer)}", new Vector2(10, 50), Color.White);
+            spriteBatch.DrawString(font, $"Current upkeep: {foodUpkeep}", new Vector2(10, 70), Color.White);
+            spriteBatch.DrawString(font, $"Raider timer: {(int)(30-raiderAttackTimer)}", new Vector2(10, 90), Color.White);
             //spriteBatch.Draw(stockpile.Sprite, mouseClickRectangle, Color.Green);
             int workersInScrap = 0;
             int workersInFood = 0;
-            foreach (var item in activeWorkers)
+            foreach (var item in workers)
             {
 
                 if (item.gatheringScrap is true)
