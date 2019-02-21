@@ -95,8 +95,16 @@ namespace Scrap_Threats
             }
         }
 
+        /// <summary>
+        /// Method that the workerthread calls when it enters the farm
+        /// </summary>
+        /// <param name="worker">the worker that enters the farm</param>
         public void Farming(Worker worker)
         {
+            // The worker waits for access to the semaphore. If there is room the thread enters. 
+            // If there is not the thread waits for 1 milisecond and then skips the semaphore and exits.
+            // This ensures that the thread does not get stuck waiting for access and the player can move the 
+            // worker-thread to other tasks because the thread is not asleep while waiting to get access.
             if (FarmingSemaphore.WaitOne(1))
             {
                 worker.gatheringFood = true;
