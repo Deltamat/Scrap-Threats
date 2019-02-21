@@ -162,7 +162,7 @@ namespace Scrap_Threats
         /// <param name="e"></param>
         private void BuyWorkerButtonClickEvent(object sender, EventArgs e)
         {
-            if (food > 50)
+            if (food >= 50)
             {
                 activeWorkers.Add(new Worker(new Vector2((int)(ScreenSize.Width * 0.5), (int)(ScreenSize.Height * 0.5)), "test"));
                 food -= 50;
@@ -171,7 +171,7 @@ namespace Scrap_Threats
 
         private void UpgradeFarmAmountButtonClickEvent(object sender, EventArgs e)
         {
-            if (scrap > 100)
+            if (scrap >= 100)
             {
                 farm.growthAmount += 50;
                 scrap -= 100;
