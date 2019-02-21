@@ -9,25 +9,46 @@ using System.Threading.Tasks;
 
 namespace Scrap_Threats
 {
+    /// <summary>
+    /// The GameObject class that every other class inherits from
+    /// </summary>
     public class GameObject
     {
         protected Texture2D sprite;
         protected Vector2 position;
         protected float rotation;
+        /// <summary>
+        /// Get-set property for the sprite Texture2D
+        /// </summary>
         public Texture2D Sprite { get => sprite; set => sprite = value; }
+        /// <summary>
+        /// Get-set property for the position
+        /// </summary>
         public Vector2 Position { get => position; set => position = value; }
 
-        // movement fields, skal nok flyttes senere
+        /// <summary>
+        /// A vector used for movement 
+        /// </summary>
         public Vector2 waypoint;
+        /// <summary>
+        /// Rectangle that is used to check if the waypoint intersects fx. the scrapyard
+        /// </summary>
         public Rectangle waypointRectangle;
-        
 
+        /// <summary>
+        /// Constructor for the GameObject
+        /// </summary>
+        /// <param name="position">The position of the building</param>
+        /// <param name="spriteName">The name of the sprite</param>
         public GameObject(Vector2 position, string spriteName)
         {
             this.Position = position;
             Sprite = GameWorld.ContentManager.Load<Texture2D>(spriteName);
         }
 
+        /// <summary>
+        /// Get property that returns a collisionbox
+        /// </summary>
         public virtual Rectangle CollisionBox
         {
             get
@@ -36,30 +57,22 @@ namespace Scrap_Threats
             }
         }
 
-        public virtual bool IsColliding(GameObject otherObject)
-        {
-            return CollisionBox.Intersects(otherObject.CollisionBox);
-        }
-
-
-        public virtual void DoCollision(GameObject otherObject)
-        {
-
-        }
-
+        /// <summary>
+        /// The override update method
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values</param>
         public virtual void Update(GameTime gameTime)
         {
 
         }
 
+        /// <summary>
+        /// The method that handles drawing
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public virtual void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(Sprite, Position, null, Color.White, rotation, new Vector2(Sprite.Width * 0.5f, Sprite.Height * 0.5f), 1f, SpriteEffects.None, 0.1f);
-        }
-
-        public void Destroy()
-        {
-
         }
     }
 }

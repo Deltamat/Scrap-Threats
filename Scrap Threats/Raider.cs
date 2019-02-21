@@ -9,6 +9,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Scrap_Threats
 {
+    /// <summary>
+    /// Unit of the type raider
+    /// Attempts to reach the stockpile to pillage some resources and kill some workers/guards
+    /// </summary>
     public class Raider : Unit
     {
         public bool killedWorker = false;
@@ -17,10 +21,13 @@ namespace Scrap_Threats
 
         public Raider(Vector2 position, string spriteName) : base(position, spriteName)
         {
+            //Stats
             speed = 10;
             waypoint = GameWorld.stockpile.Position;
             health = 10 + GameWorld.waveCount;
             alive = true;
+
+            //Thread
             GameTime gameTime = new GameTime();
             t = new Thread(() => Update(gameTime));
             t.IsBackground = true;
@@ -29,16 +36,18 @@ namespace Scrap_Threats
 
         public override void Update(GameTime gameTime)
         {
-            Thread.Sleep(10);
+            Thread.Sleep(10); //Waits for 10 milliseconds when spawned
             while (alive is true)
             {
+                //Gives the raider a direction, i.e. the stockpile's location
                 Vector2 direction = waypoint - position;
                 direction.Normalize();
-                position += direction * speed * (float)GameWorld.globalGameTime;
+                position += direction * speed * (float)GameWorld.globalGameTime; //Moves the raider
 
+                //The raider reaches the stockpile
                 if (Vector2.Distance(position, waypoint) < 50)
                 {
-                    int totalUnitCountF = GameWorld.workers.Count + GameWorld.guards.Count;
+                    int totalUnitCountF = GameWorld.workers.Count + GameWorld.guards.Count; //Gives the total amount of units Friendly to the player, i.e. workers and guards
                     if (GameWorld.rng.Next(0, totalUnitCountF) <= GameWorld.workers.Count && GameWorld.workers.Count > 0)
                     {
                         if (GameWorld.workers.Count > 0) //Ensures that there are workers to kill
@@ -52,25 +61,21 @@ namespace Scrap_Threats
                     {
                         if (GameWorld.guards.Count > 0) //Ensures that there are guards to kill
                         {
-                            int deadGuard = GameWorld.rng.Next(0, GameWorld.guards.Count); //Picks a random worker
+                            int deadGuard = GameWorld.rng.Next(0, GameWorld.guards.Count); //Picks a random guard
                             GameWorld.guards[deadGuard].alive = false;
                             GameWorld.deadGuards.Add(GameWorld.guards[deadGuard]);
                         }
                     }
-                    //int deadWorker = GameWorld.rng.Next(0, GameWorld.workers.Count); //Picks a random worker
-                    //if (GameWorld.workers.Count > 0) //Ensures that there are workers to kill
-                    //{
-                    //    GameWorld.workers[deadWorker].alive = false;
-                    //    GameWorld.deadWorkers.Add(GameWorld.workers[deadWorker]);
+
                     health = 0;
-                    lock (Worker.lockObject)
+                    lock (Worker.lockObject) //Ensures that only one units can access the stockpile's resources, i.e. food and scrap
                     {
                         GameWorld.food -= 10;
                         GameWorld.scrap -= 10;
                     }
-                    //}
                 }
 
+                //Removes the raider if they are dead
                 if (health <= 0)
                 {
                     try
@@ -89,17 +94,20 @@ namespace Scrap_Threats
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            timeElapsed += GameWorld.globalGameTime;
-            aniIndex = (int)(timeElapsed * 5);
+            timeElapsed += GameWorld.globalGameTime; //Animation timing
+            aniIndex = (int)(timeElapsed * 5); //Animation index
+            //Resets aniIndex and timeElapsed
             if (aniIndex > 7)
             {
                 aniIndex = 0;
                 timeElapsed = 0;
             }
 
+            //Gives direction to the raider
             float radians = (float)Math.Atan2(position.Y - waypoint.Y, position.X - waypoint.X);
             float degrees = MathHelper.ToDegrees(radians);
 
+            //Loads different sprites depending on direction
             if (degrees == 0)
             {
                 sprite = GameWorld.ContentManager.Load<Texture2D>("standing");
@@ -137,6 +145,7 @@ namespace Scrap_Threats
                 sprite = GameWorld.ContentManager.Load<Texture2D>($"se_p{aniIndex}");
             }
 
+            //Draws the raider
             spriteBatch.Draw(Sprite, Position, null, Color.Crimson, rotation, new Vector2(Sprite.Width * 0.5f, Sprite.Height * 0.5f), 1f, SpriteEffects.None, 0.1f);
         }
     }
