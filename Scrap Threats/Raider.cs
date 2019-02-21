@@ -19,7 +19,7 @@ namespace Scrap_Threats
         {
             speed = 10;
             waypoint = GameWorld.stockpile.Position;
-            health = 10;
+            health = 10 + GameWorld.waveCount;
             alive = true;
             GameTime gameTime = new GameTime();
             t = new Thread(() => Update(gameTime));
