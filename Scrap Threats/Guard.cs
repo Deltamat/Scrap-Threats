@@ -44,13 +44,13 @@ namespace Scrap_Threats
                 cooldown = GameWorld.elapsedTime - cooldownStart;
                 if (GameWorld.raiders.Count > 0 && target == null)
                 {
-                    //try
-                    //{
+                    try
+                    {
                         target = (GameWorld.raiders[GameWorld.rng.Next(0, GameWorld.raiders.Count)]);
 
                         //foreach (var item in GameWorld.raiders)
                         //{
-                            
+
                         //    //distance = Vector2.Distance(GameWorld.stockpile.Position, item.Position);
                         //    //if (distance < targetDistance)
                         //    //{
@@ -58,12 +58,12 @@ namespace Scrap_Threats
                         //    //    target = item;
                         //    //}
                         //}
-                    //}
-                    //catch (Exception)
-                    //{
-                        
-                    //}
-                    
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+
                 }
 
                 if (target != null)
