@@ -96,7 +96,7 @@ namespace Scrap_Threats
             buildings.Add(stockpile);
             buildings.Add(scrapyard);
             UI.Add(tmpButton);
-
+            
             base.Initialize();
         }
 
@@ -108,7 +108,7 @@ namespace Scrap_Threats
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            var buyButton = new Button(content.Load<Texture2D>("Button"), content.Load<SpriteFont>("Font"), new Vector2(500, 240), "Button")
+            var buyButton = new Button(content.Load<Texture2D>("Button"), content.Load<SpriteFont>("Font"), new Vector2(400 , 240), "Button")
             {
                 TextForButton = "Buy Worker",
             };
@@ -137,7 +137,8 @@ namespace Scrap_Threats
         /// <param name="e"></param>
         private void BuyButtonClicketyClickEvent(object sender, EventArgs e)
         {
-            scrap++;
+            Scrapyard.scrapyardMax++;
+            Scrapyard.MiningSemaphore = new Semaphore(Scrapyard.scrapyardMax, Scrapyard.scrapyardMax);
         }
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload

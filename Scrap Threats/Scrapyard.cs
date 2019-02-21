@@ -12,7 +12,9 @@ namespace Scrap_Threats
     public class Scrapyard : Building
     {
         private float scale = 0.1f;
-        public static Semaphore MiningSemaphore = new Semaphore(3,3);
+        public static int scrapyardMax = 3;
+
+        public static Semaphore MiningSemaphore = new Semaphore(scrapyardMax,scrapyardMax);
 
         public Scrapyard(Vector2 position, string spriteName) : base(position, spriteName)
         {
