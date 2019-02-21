@@ -26,13 +26,20 @@ namespace Scrap_Threats
 
             if (MiningSemaphore.WaitOne(1))
             {
-                worker.mining = true;
+                worker.gatheringScrap = true;
                 worker.readyToMine = false;
                 worker.carryingScrap = 10;
 
                 Thread.Sleep(5000);
-                worker.mining = false;
-                MiningSemaphore.Release();
+                worker.gatheringScrap = false;
+                try
+                {
+                    MiningSemaphore.Release();
+                }
+                catch (SemaphoreFullException)
+                {
+                    
+                }
             }
             else
 	        {

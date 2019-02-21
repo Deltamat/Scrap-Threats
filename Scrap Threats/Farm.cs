@@ -18,7 +18,8 @@ namespace Scrap_Threats
         public bool harvestable;
         private bool growing;
         public int harvestableFood;
-        static Semaphore FarmingSemaphore = new Semaphore(3, 3);
+        public int growthAmount = 50;
+        public static Semaphore FarmingSemaphore = new Semaphore(3, 3);
         static Mutex m = new Mutex();
 
         public Farm(Vector2 position, string spriteName) : base(position, spriteName)
@@ -83,18 +84,12 @@ namespace Scrap_Threats
                 //If the field has been growing for 10 seconds
                 if ((GameWorld.elapsedTime - growthStart) > 10 && harvestable == false && growing == true)
                 {
-                    harvestableFood = 50;
+                    harvestableFood = growthAmount;
                     harvestable = true;
                     growing = false;
                 }
                 
                 growTimer = GameWorld.elapsedTime - growthStart;
-
-                //Temporary harvest key
-                if (Keyboard.GetState().IsKeyDown(Keys.H))
-                {
-                    harvestableFood = 0;
-                }
 
                 Thread.Sleep(1);
             }
@@ -104,7 +99,7 @@ namespace Scrap_Threats
         {
             if (FarmingSemaphore.WaitOne(1))
             {
-                worker.mining = true;
+                worker.gatheringFood = true;
                 m.WaitOne();
                 worker.readyToMine = false;
                 if (harvestableFood > 0)
@@ -114,8 +109,16 @@ namespace Scrap_Threats
                 }
                 m.ReleaseMutex();
                 Thread.Sleep(5000);
-                worker.mining = false;
-                FarmingSemaphore.Release();
+                worker.gatheringFood = false;
+
+                try
+                {
+                    FarmingSemaphore.Release();
+                }
+                catch (SemaphoreFullException)
+                {
+                    
+                }
             }
             else
             {
