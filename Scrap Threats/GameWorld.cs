@@ -48,6 +48,7 @@ namespace Scrap_Threats
         int raiderCount = 3;
         public static List<Guard> guards = new List<Guard>();
         public static List<Worker> deadWorkers = new List<Worker>();
+        public static int waveCount = 0;
 
 
         private static ContentManager content;
@@ -375,8 +376,9 @@ namespace Scrap_Threats
                 {
                     raiders.Add(new Raider(new Vector2(1920, rng.Next(0,1080)), "test"));
                 }
-                raiderCount += 2;
+                raiderCount += 1;
                 raiderAttackTimer = 0;
+                waveCount++;
             }
 
             //foreach (var item in raiders)
