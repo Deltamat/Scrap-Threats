@@ -51,6 +51,7 @@ namespace Scrap_Threats
         public static int waveCount = 0;
 
 
+
         private static ContentManager content;
         public static ContentManager ContentManager
         {
@@ -242,15 +243,32 @@ namespace Scrap_Threats
 
         private void BuyGuardButtonClickEvent(object sender, EventArgs e)
         {
+            //if (food >= 10 && scrap >= 25)
+            //{
+            //    guards.Add(new Guard(new Vector2((int)(ScreenSize.Width * 0.5), (int)(ScreenSize.Height * 0.5)), "test"));
+            //    deadWorkers.Add(activeWorkers[rng.Next(0,activeWorkers.Count)]);
+            //    lock (Worker.lockObject)
+            //    {
+            //    food -= 10;
+            //    scrap -= 25;
+            //    }
+            //}
+
             if (food >= 10 && scrap >= 25)
             {
-                guards.Add(new Guard(new Vector2((int)(ScreenSize.Width * 0.5), (int)(ScreenSize.Height * 0.5)), "test"));
-                deadWorkers.Add(activeWorkers[rng.Next(0,activeWorkers.Count)]);
-                lock (Worker.lockObject)
+                if (selectedUnit.Count == 1 && selectedUnit[0] is Worker)
                 {
-                food -= 10;
-                scrap -= 25;
+                    guards.Add(new Guard(new Vector2((int)(ScreenSize.Width * 0.5), (int)(ScreenSize.Height * 0.5)), "test"));
+                    deadWorkers.Add((Worker)selectedUnit[0]);
+                    selectedUnit.RemoveRange(0, selectedUnit.Count);
+                    
+                    lock (Worker.lockObject)
+                    {
+                        food -= 10;
+                        scrap -= 25;
+                    }
                 }
+                
             }
         }
 
@@ -281,7 +299,6 @@ namespace Scrap_Threats
 
             if (Mouse.GetState().LeftButton is ButtonState.Pressed)
             {
-
                 if (selectionBoxOrigin == new Vector2(-100))
                 {
                     selectionBoxOrigin = new Vector2(Mouse.GetState().Position.X, Mouse.GetState().Position.Y);

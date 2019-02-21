@@ -72,6 +72,8 @@ namespace Scrap_Threats
                         Vector2 direction = target.Position - position;
                         direction.Normalize();
                         position += direction * speed * (float)GameWorld.globalGameTime;
+                        //float degrees = (float)(Math.Atan2(direction.X, direction.Y) / Math.PI * 180f);
+                        //float radians = (float)Math.Atan2(direction.X, direction.Y);
                     }
 
                     if (Vector2.Distance(position, target.Position) < 110)

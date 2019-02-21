@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Threading;
+using System.Windows;
 
 namespace Scrap_Threats
 {
@@ -20,6 +21,7 @@ namespace Scrap_Threats
         public bool gatheringScrap = false;
         public static readonly object lockObject = new object();
         public double miningTimer;
+
 
 
         public Worker(Vector2 position, string spriteName) : base(position, spriteName)
@@ -75,10 +77,13 @@ namespace Scrap_Threats
                     }
                     else
                     {
-                        Vector2 direction = waypoint - position;
+                        direction = waypoint - position;
                         direction.Normalize();
                         position += direction * speed * (float)GameWorld.globalGameTime;
+                       
                     }
+
+
                 }
 
                 if (unemplyed == false)
@@ -170,6 +175,9 @@ namespace Scrap_Threats
                 spriteBatch.Draw(sprite, Position, null, Color.White, rotation, new Vector2(sprite.Width * 0.5f, sprite.Height * 0.5f), 1f, SpriteEffects.None, 0.1f);
 
             }
+
+            float radians = (float)Math.Atan2(position.Y - waypoint.Y, position.X - waypoint.X);
+            float degrees = MathHelper.ToDegrees(radians);
         }
 
        

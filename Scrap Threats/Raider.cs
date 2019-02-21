@@ -54,7 +54,14 @@ namespace Scrap_Threats
 
                 if (health <= 0)
                 {
-                    GameWorld.raiders.Remove(this);                   
+                    try
+                    {
+                        GameWorld.raiders.Remove(this);
+                    }
+                    catch (Exception)
+                    {
+
+                    }
                     break;
                 }
                 Thread.Sleep(1);
