@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,34 +13,52 @@ namespace Scrap_Threats
     {
         public bool killedWorker = false;
         public int health;
+        Thread t;
 
         public Raider(Vector2 position, string spriteName) : base(position, spriteName)
         {
-            speed = 100;
+            speed = 10;
             waypoint = GameWorld.stockpile.Position;
             health = 10;
+            alive = true;
+            GameTime gameTime = new GameTime();
+            t = new Thread(() => Update(gameTime));
+            t.IsBackground = true;
+            t.Start();
         }
 
         public override void Update(GameTime gameTime)
         {
-            Vector2 direction = waypoint - position;
-            direction.Normalize();
-            position += direction * speed * (float)GameWorld.globalGameTime;
-
-            if (Vector2.Distance(position, waypoint) < 50)
+            Thread.Sleep(10);
+            while (alive is true)
             {
-                int deadWorker = GameWorld.rng.Next(0, GameWorld.activeWorkers.Count); //Picks a random worker
-                if (GameWorld.activeWorkers.Count > 0) //Ensures that there are workers to kill
+                Vector2 direction = waypoint - position;
+                direction.Normalize();
+                position += direction * speed * (float)GameWorld.globalGameTime;
+
+                if (Vector2.Distance(position, waypoint) < 50)
                 {
-                    GameWorld.activeWorkers[deadWorker].alive = false;
-                    GameWorld.activeWorkers.Remove(GameWorld.activeWorkers[deadWorker]);
-                    killedWorker = true;
+                    int deadWorker = GameWorld.rng.Next(0, GameWorld.activeWorkers.Count); //Picks a random worker
+                    if (GameWorld.activeWorkers.Count > 0) //Ensures that there are workers to kill
+                    {
+                        GameWorld.activeWorkers[deadWorker].alive = false;
+                        GameWorld.deadWorkers.Add(GameWorld.activeWorkers[deadWorker]);
+                        health = 0;
+                    }
                 }
-            }
 
-            if (health <= 0)
-            {
-                killedWorker = true;
+                if (health <= 0)
+                {
+                    GameWorld.raiders.Remove(this);
+                    lock (Worker.lockObject)
+                    {
+                        GameWorld.food -= 10;
+                        GameWorld.scrap -= 10;
+                    }
+
+                    break;
+                }
+                Thread.Sleep(1);
             }
         }
 
