@@ -115,6 +115,7 @@ namespace Scrap_Threats
                 {
                     FarmingSemaphore.Release();
                 }
+                //Secures that the program doesn't crash because of this particular exception
                 catch (SemaphoreFullException)
                 {
                     
