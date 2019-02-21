@@ -243,32 +243,15 @@ namespace Scrap_Threats
 
         private void BuyGuardButtonClickEvent(object sender, EventArgs e)
         {
-            //if (food >= 10 && scrap >= 25)
-            //{
-            //    guards.Add(new Guard(new Vector2((int)(ScreenSize.Width * 0.5), (int)(ScreenSize.Height * 0.5)), "test"));
-            //    deadWorkers.Add(activeWorkers[rng.Next(0,activeWorkers.Count)]);
-            //    lock (Worker.lockObject)
-            //    {
-            //    food -= 10;
-            //    scrap -= 25;
-            //    }
-            //}
-
             if (food >= 10 && scrap >= 25)
             {
-                if (selectedUnit.Count == 1 && selectedUnit[0] is Worker)
+                guards.Add(new Guard(new Vector2((int)(ScreenSize.Width * 0.5), (int)(ScreenSize.Height * 0.5)), "test"));
+                deadWorkers.Add(activeWorkers[rng.Next(0, activeWorkers.Count)]);
+                lock (Worker.lockObject)
                 {
-                    guards.Add(new Guard(new Vector2((int)(ScreenSize.Width * 0.5), (int)(ScreenSize.Height * 0.5)), "test"));
-                    deadWorkers.Add((Worker)selectedUnit[0]);
-                    selectedUnit.RemoveRange(0, selectedUnit.Count);
-                    
-                    lock (Worker.lockObject)
-                    {
-                        food -= 10;
-                        scrap -= 25;
-                    }
+                    food -= 10;
+                    scrap -= 25;
                 }
-                
             }
         }
 
