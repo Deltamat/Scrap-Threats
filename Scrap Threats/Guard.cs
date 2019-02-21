@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,50 +16,75 @@ namespace Scrap_Threats
         private Raider target;
         int damage;
         double cooldown;
+        double cooldownStart;
+        Thread t;
 
         public Guard(Vector2 position, string spriteName) : base(position, spriteName)
         {
-            speed = 500f;
+            speed = 40f;
             targetDistance = 10000;
-            damage = 10;
+            damage = 5;
+            alive = true;
+            GameTime gameTime = new GameTime();
+            t = new Thread(() => Update(gameTime));
+            t.IsBackground = true;
+            t.Start();
         }
 
         public override void Update(GameTime gameTime)
         {
-            cooldown += gameTime.ElapsedGameTime.TotalSeconds;
-            if (GameWorld.raiders.Count > 0)
+            Thread.Sleep(1000);
+            while (alive is true)
             {
-                foreach (var item in GameWorld.raiders)
+                if (cooldownStart == 0)
                 {
-                    distance = Vector2.Distance(position, item.Position);
-                    if (distance < targetDistance)
-                    {
-                        targetDistance = distance;
-                        target = item;
-                    }
+                    cooldownStart = GameWorld.elapsedTime;
                 }
-            }
-            
-            if (target != null)
-            {
-                if (Vector2.Distance(position, target.Position) > 100)
+                cooldown = GameWorld.elapsedTime - cooldownStart;
+                if (GameWorld.raiders.Count > 0)
                 {
-                    Vector2 direction = target.Position - position;
-                    direction.Normalize();
-                    position += direction * speed * (float)GameWorld.globalGameTime;
+                    try
+                    {
+                        foreach (var item in GameWorld.raiders)
+                        {
+                            distance = Vector2.Distance(GameWorld.stockpile.Position, item.Position);
+                            if (distance < targetDistance)
+                            {
+                                targetDistance = distance;
+                                target = item;
+                            }
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        
+                    }
+                    
                 }
 
-                if (Vector2.Distance(position, target.Position) < 110)
+                if (target != null)
                 {
-                    if (cooldown > 1)
+                    if (Vector2.Distance(position, target.Position) > 100)
                     {
-                        target.health -= damage;
-                        targetDistance = 10000;
-                        cooldown = 0;
+                        Vector2 direction = target.Position - position;
+                        direction.Normalize();
+                        position += direction * speed * (float)GameWorld.globalGameTime;
+                    }
+
+                    if (Vector2.Distance(position, target.Position) < 110)
+                    {
+                        if (cooldown > 1)
+                        {
+                            target.health -= damage;
+                            targetDistance = 10000;
+                            cooldown = 0;
+                            cooldownStart = 0;
+                        }
+
                     }
 
                 }
-                
+                Thread.Sleep(1);
             }
         }
 

@@ -47,6 +47,7 @@ namespace Scrap_Threats
         private double raiderAttackTimer;
         int raiderCount = 3;
         public static List<Guard> guards = new List<Guard>();
+        public static List<Worker> deadWorkers = new List<Worker>();
 
 
         private static ContentManager content;
@@ -354,12 +355,19 @@ namespace Scrap_Threats
                         if (activeWorkers.Count > 0) //Ensures that there are workers to kill
                         {
                             activeWorkers[deadWorker].alive = false;
-                            activeWorkers.Remove(activeWorkers[deadWorker]);
+                            deadWorkers.Add(activeWorkers[deadWorker]);
+                            //activeWorkers.Remove(activeWorkers[deadWorker]);
                         }                       
                     }
                 }
                 foodUpkeepTimer = 0;
             }
+
+            foreach (var item in deadWorkers)
+            {
+                activeWorkers.Remove(item);
+            }
+            
 
             if (raiderAttackTimer > 30)
             {
@@ -367,27 +375,35 @@ namespace Scrap_Threats
                 {
                     raiders.Add(new Raider(new Vector2(1920, rng.Next(0,1080)), "test"));
                 }
-                raiderCount += 3;
+                raiderCount += 2;
                 raiderAttackTimer = 0;
             }
 
-            foreach (var item in raiders)
+            //foreach (var item in raiders)
+            //{
+            //    //item.Update(gameTime);
+            //    if (item.killedWorker == true)
+            //    {
+            //        killRaider = item;
+            //    }
+            //}
+
+            //if (killRaider != null && killRaider.killedWorker == true)
+            //{
+            //    raiders.Remove(killRaider);
+            //}
+
+            //foreach (var item in guards)
+            //{
+            //    item.Update(gameTime);
+            //}
+
+            foreach (var item in activeWorkers)
             {
-                item.Update(gameTime);
-                if (item.killedWorker == true)
+                if (item.gatheringFood is true || item.gatheringScrap is true)
                 {
-                    killRaider = item;
+                    item.miningTimer += gameTime.ElapsedGameTime.TotalSeconds;
                 }
-            }
-
-            if (killRaider != null && killRaider.killedWorker == true)
-            {
-                raiders.Remove(killRaider);
-            }
-
-            foreach (var item in guards)
-            {
-                item.Update(gameTime);
             }
 
             raiderAttackTimer += globalGameTime;
@@ -441,7 +457,23 @@ namespace Scrap_Threats
 
             spriteBatch.DrawString(font, $"Scrap: {scrap}", new Vector2(10), Color.White);
             spriteBatch.DrawString(font, $"Food: {food}", new Vector2(10, 30), Color.White);
-            spriteBatch.Draw(stockpile.Sprite, mouseClickRectangle, Color.Green);
+            //spriteBatch.Draw(stockpile.Sprite, mouseClickRectangle, Color.Green);
+            int workersInScrap = 0;
+            int workersInFood = 0;
+            foreach (var item in activeWorkers)
+            {
+
+                if (item.gatheringScrap is true)
+                {
+                    spriteBatch.DrawString(font, $"Worker gathering scrap: Time left: {(int)Math.Abs(item.miningTimer - 5)}", new Vector2(scrapyard.Position.X - 120, scrapyard.Position.Y - 115 - 20 * workersInScrap), Color.White);
+                    workersInScrap++;
+                }
+                if (item.gatheringFood is true)
+                {
+                    spriteBatch.DrawString(font, $"Worker gathering food: Time left: {(int)Math.Abs(item.miningTimer - 5)}", new Vector2(farm.Position.X - 120, farm.Position.Y - 115 - 20 * workersInFood), Color.White);
+                    workersInFood++;
+                }
+            }
 
             spriteBatch.End();
             base.Draw(gameTime);

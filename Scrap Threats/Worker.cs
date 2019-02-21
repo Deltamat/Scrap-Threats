@@ -18,7 +18,8 @@ namespace Scrap_Threats
         public Thread t;
         public bool waitingForScrap;
         public bool gatheringScrap = false;
-        static readonly object lockObject = new object();
+        public static readonly object lockObject = new object();
+        public double miningTimer;
 
 
         public Worker(Vector2 position, string spriteName) : base(position, spriteName)
@@ -109,6 +110,7 @@ namespace Scrap_Threats
                                 }
                                 //mining = false;
                             }
+                            miningTimer = 0;
 
                         }
                         // når den er færdig:
