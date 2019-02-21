@@ -535,14 +535,6 @@ namespace Scrap_Threats
             base.Draw(gameTime);
         }
 
-        private void UpdateWorkers(GameTime gameTime, Worker worker)
-        {
-            while (true)
-            {
-                worker.Update(gameTime);
-            }
-        }
-
         private void DrawCollisionBox(GameObject go)
         {
             Rectangle collisionBox = go.CollisionBox;

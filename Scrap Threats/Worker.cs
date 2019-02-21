@@ -10,7 +10,7 @@ namespace Scrap_Threats
     {
         //delegate void UpdateDelegate(GameTime gameTime);
         Random rng = new Random();
-        bool unemplyed = true;
+        bool unemployed = true;
         public bool readyToMine = true;
         public bool gatheringFood = false;
         public int carryingScrap;
@@ -48,29 +48,29 @@ namespace Scrap_Threats
                 if (waypointRectangle.Intersects(GameWorld.scrapyard.CollisionBox)) // kan nok laves om til event eventuelt
                 {
                     waypoint = GameWorld.scrapyard.Position;
-                    unemplyed = false;
+                    unemployed = false;
                     waypointRectangle = new Rectangle(-1000,-1000,1,1);
                 }
                 else if (waypointRectangle != new Rectangle(-1000, -1000, 1, 1))
                 {
-                    unemplyed = true;
+                    unemployed = true;
                 }
 
                 if (waypointRectangle.Intersects(GameWorld.farm.CollisionBox)) // kan nok laves om til event eventuelt
                 {
                     waypoint = GameWorld.farm.Position;
-                    unemplyed = false;
+                    unemployed = false;
                     waypointRectangle = new Rectangle(-1000, -1000, 1, 1);
                     farming = true;
                 }
                 else if (waypointRectangle != new Rectangle(-1000, -1000, 1, 1))
                 {
-                    unemplyed = true;
+                    unemployed = true;
                     farming = false;
                 }
 
                 // går mod waypoint og teleportere når den kommer tæt nok på for at forhindre den hopper på stedet.
-                if (unemplyed == true)
+                if (unemployed == true)
                 {
                     if (Vector2.Distance(waypoint, position) < 2)
                     {
@@ -87,7 +87,7 @@ namespace Scrap_Threats
 
                 }
 
-                if (unemplyed == false)
+                if (unemployed == false)
                 {
                     if (Vector2.Distance(position, waypoint) > 45)
                     {
