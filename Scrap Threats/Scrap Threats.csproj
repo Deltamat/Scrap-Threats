@@ -56,7 +56,6 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AnimatedGameObject.cs" />
     <Compile Include="Building.cs" />
     <Compile Include="Button.cs" />
     <Compile Include="Farm.cs" />

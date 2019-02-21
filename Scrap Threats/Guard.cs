@@ -47,17 +47,6 @@ namespace Scrap_Threats
                     try
                     {
                         target = (GameWorld.raiders[GameWorld.rng.Next(0, GameWorld.raiders.Count)]);
-
-                        //foreach (var item in GameWorld.raiders)
-                        //{
-
-                        //    //distance = Vector2.Distance(GameWorld.stockpile.Position, item.Position);
-                        //    //if (distance < targetDistance)
-                        //    //{
-                        //    //    targetDistance = distance;
-                        //    //    target = item;
-                        //    //}
-                        //}
                     }
                     catch (Exception)
                     {
@@ -73,8 +62,6 @@ namespace Scrap_Threats
                         Vector2 direction = target.Position - position;
                         direction.Normalize();
                         position += direction * speed * (float)GameWorld.globalGameTime;
-                        //float degrees = (float)(Math.Atan2(direction.X, direction.Y) / Math.PI * 180f);
-                        //float radians = (float)Math.Atan2(direction.X, direction.Y);
                     }
 
                     if (Vector2.Distance(position, target.Position) < 110)
@@ -99,15 +86,63 @@ namespace Scrap_Threats
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            if (GameWorld.selectedUnit.Contains(this))
+            timeElapsed += GameWorld.globalGameTime;
+            aniIndex = (int)(timeElapsed * 10);
+            float radians;
+            if (aniIndex > 7)
             {
-                spriteBatch.Draw(sprite, Position, null, Color.CornflowerBlue, rotation, new Vector2(sprite.Width * 0.5f, sprite.Height * 0.5f), 1f, SpriteEffects.None, 0.1f);
+                aniIndex = 0;
+                timeElapsed = 0;
+            }
+            if (target != null)
+            {
+                radians = (float)Math.Atan2(position.Y - target.Position.Y, position.X - target.Position.X);
             }
             else
             {
-                spriteBatch.Draw(sprite, Position, null, Color.Aquamarine, rotation, new Vector2(sprite.Width * 0.5f, sprite.Height * 0.5f), 1f, SpriteEffects.None, 0.1f);
-
+                radians = 0;
             }
+            float degrees = MathHelper.ToDegrees(radians);
+
+            if (degrees == 0)
+            {
+                sprite = GameWorld.ContentManager.Load<Texture2D>("standing");
+            }
+            else if (degrees > -22.5f && degrees < 22.5f)
+            {
+                sprite = GameWorld.ContentManager.Load<Texture2D>($"w_p{aniIndex}");
+            }
+            else if (degrees > 22.5f && degrees < 67.5f)
+            {
+                sprite = GameWorld.ContentManager.Load<Texture2D>($"nw_p{aniIndex}");
+            }
+            else if (degrees > 67.5f && degrees < 112.5f)
+            {
+                sprite = GameWorld.ContentManager.Load<Texture2D>($"n_p{aniIndex}");
+            }
+            else if (degrees > 112.5f && degrees < 157.5f)
+            {
+                sprite = GameWorld.ContentManager.Load<Texture2D>($"ne_p{aniIndex}");
+            }
+            else if (degrees > 157.5f || degrees < -157.5f)
+            {
+                sprite = GameWorld.ContentManager.Load<Texture2D>($"e_p{aniIndex}");
+            }
+            else if (degrees < -22.5f && degrees > -67.5f)
+            {
+                sprite = GameWorld.ContentManager.Load<Texture2D>($"sw_p{aniIndex}");
+            }
+            else if (degrees < -67.5f && degrees > -112.5f)
+            {
+                sprite = GameWorld.ContentManager.Load<Texture2D>($"s_p{aniIndex}");
+            }
+            else if (degrees < -112.5f && degrees > -157.5f)
+            {
+                sprite = GameWorld.ContentManager.Load<Texture2D>($"se_p{aniIndex}");
+            }
+
+            spriteBatch.Draw(sprite, Position, null, Color.Aquamarine, rotation, new Vector2(sprite.Width * 0.5f, sprite.Height * 0.5f), 1f, SpriteEffects.None, 0.1f);
+
         }
     }
 }

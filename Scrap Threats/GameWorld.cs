@@ -95,7 +95,7 @@ namespace Scrap_Threats
             IsMouseVisible = true;
             for (int i = 0; i < 3; i++)
             {
-                worker = new Worker(new Vector2(rng.Next(100, 1800), rng.Next(100, 900)), "test");
+                worker = new Worker(new Vector2(rng.Next(100, 1800), rng.Next(100, 900)), "Spritesheet Walk");
                 workers.Add(worker);
             }
 
@@ -106,7 +106,7 @@ namespace Scrap_Threats
             buildings.Add(stockpile);
             buildings.Add(scrapyard);
 
-            guards.Add(new Guard(new Vector2(500), "test"));
+            guards.Add(new Guard(new Vector2(500), "Spritesheet Walk"));
 
             base.Initialize();
         }
@@ -246,7 +246,7 @@ namespace Scrap_Threats
         {
             if (food >= 10 && scrap >= 25)
             {
-                guards.Add(new Guard(new Vector2((int)(ScreenSize.Width * 0.5), (int)(ScreenSize.Height * 0.5)), "test"));
+                guards.Add(new Guard(new Vector2((int)(ScreenSize.Width * 0.5), (int)(ScreenSize.Height * 0.5)), "Spritesheet Walk"));
                 deadWorkers.Add(workers[rng.Next(0,workers.Count)]);
                 lock (Worker.lockObject)
                 {
@@ -485,13 +485,17 @@ namespace Scrap_Threats
             foreach (Building building in buildings)
             {
                 building.Draw(spriteBatch);
+#if DEBUG
                 DrawCollisionBox(building);
+#endif
             }
 
             foreach (Worker worker in workers)
             {
                 worker.Draw(spriteBatch);
+#if DEBUG
                 DrawCollisionBox(worker);
+#endif
             }
 
             foreach (var item in raiders)
@@ -503,12 +507,6 @@ namespace Scrap_Threats
             {
                 item.Draw(spriteBatch);
             }
-
-            //foreach (Button button in UI)
-            //{
-            //    button.Draw(spriteBatch);
-            //    DrawCollisionBox(button);
-            //}
             
             spriteBatch.DrawString(font, $"Scrap: {scrap}", new Vector2(10), Color.White);
             spriteBatch.DrawString(font, $"Food: {food}", new Vector2(10, 30), Color.White);
