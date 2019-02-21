@@ -8,14 +8,26 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Scrap_Threats
 {
+    /// <summary>
+    /// Stockpile class, this is where workers go to store resourses
+    /// </summary>
     public class Stockpile : Building
     {
         private float scale = 0.8f;
 
+        /// <summary>
+        /// Stockpile constructor
+        /// </summary>
+        /// <param name="position">The position of the stockpile</param>
+        /// <param name="spriteName">the name of the sprite</param>
         public Stockpile(Vector2 position, string spriteName) : base(position, spriteName)
         {
         }
 
+        /// <summary>
+        /// Draw method that handles drawing the stockpile and the different stockpile states
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public override void Draw(SpriteBatch spriteBatch)
         {
             if (GameWorld.scrap == 0) //No scrap
@@ -38,6 +50,9 @@ namespace Scrap_Threats
             spriteBatch.Draw(sprite, Position, null, Color.White, rotation, new Vector2(sprite.Width * 0.5f, sprite.Height * 0.5f), scale, SpriteEffects.None, 0.1f);
         }
 
+        /// <summary>
+        /// Override property that returns a collisionbox
+        /// </summary>
         public override Rectangle CollisionBox
         {
             get
