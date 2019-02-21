@@ -43,9 +43,10 @@ namespace Scrap_Threats
             Thread.Sleep(1000);
             while (alive == true)
             {
-                // tjekker op på om waypoint er inde i scrapyard, hvis det er bliver workeren jobless = false og begynder at mine.
-                // hvis waypoint ikke er inde i en scrapyard bliver workeren jobless igen.
-                if (waypointRectangle.Intersects(GameWorld.scrapyard.CollisionBox)) // kan nok laves om til event eventuelt
+                // Tjekker op på om waypoint er inde i scrapyarden, hvis det er bliver workeren "unemployed = false" og
+                // begynder at samle "scraps".
+                // Hvis waypoint ikke er inde i en scrapyarden bliver workeren "unemployed = true" igen.
+                if (waypointRectangle.Intersects(GameWorld.scrapyard.CollisionBox)) 
                 {
                     waypoint = GameWorld.scrapyard.Position;
                     unemployed = false;
@@ -56,7 +57,10 @@ namespace Scrap_Threats
                     unemployed = true;
                 }
 
-                if (waypointRectangle.Intersects(GameWorld.farm.CollisionBox)) // kan nok laves om til event eventuelt
+                // Tjekker op på om waypoint er inde i farm'en, hvis det er bliver workeren "unemployed = false" og
+                // begynder at samle "food".
+                // Hvis waypoint ikke er inde i en farm'en bliver workeren "unemployed = true" igen.
+                if (waypointRectangle.Intersects(GameWorld.farm.CollisionBox)) 
                 {
                     waypoint = GameWorld.farm.Position;
                     unemployed = false;
@@ -87,8 +91,10 @@ namespace Scrap_Threats
 
                 }
 
+                
                 if (unemployed == false)
                 {
+                    //går hen mod waypoint så længe den er over 45 fra.
                     if (Vector2.Distance(position, waypoint) > 45)
                     {
                         Vector2 direction = waypoint - position;
@@ -98,31 +104,28 @@ namespace Scrap_Threats
 
                     if (Vector2.Distance(waypoint, position) < 50)
                     {
-                        //få tråden ind i minen/scrapyard og vente der til den er færdig
+                        //får tråden ind i farmen/scrapyarden og venter der til den er færdig med at samle ressourcer.
                         if (readyToMine == true)
                         {
                             if (farming is false)
                             {
-                                //mining = true;
                                 GameWorld.scrapyard.Mining(this);
-                                //mining = false;
                             }
                             else if (farming is true)
                             {
-                                //mining = true;
                                 if (GameWorld.farm.harvestable == true)
                                 {
                                     GameWorld.farm.Farming(this);
                                 }
-                                //mining = false;
                             }
+                            //resetter timeren til teksten som vises oven over scrapyarden/farmen.
                             miningTimer = 0;
 
                         }
                         // når den er færdig:
                         if (Vector2.Distance(position, GameWorld.stockpile.Position) < 50)
                         {
-                            
+                            //Læsser scraps af i stockpilen
                             if (farming is false)
                             {
                                 waypoint = GameWorld.scrapyard.Position;
@@ -133,6 +136,7 @@ namespace Scrap_Threats
                                 }
                                 carryingScrap = 0;
                             }
+                            //Læsser mad af i stockpilen
                             else
                             {
                                 waypoint = GameWorld.farm.Position;
@@ -147,6 +151,7 @@ namespace Scrap_Threats
                         }
                         else
                         {
+                            //returnerer til stockpilen med ressourcer 
                             if (readyToMine == false)
                             {
                                 waypoint = GameWorld.stockpile.Position;
@@ -163,17 +168,20 @@ namespace Scrap_Threats
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            timeElapsed += GameWorld.globalGameTime;
-            aniIndex = (int)(timeElapsed * 10);
+            timeElapsed += GameWorld.globalGameTime; //Animation timing
+            aniIndex = (int)(timeElapsed * 10); //Animation index
+            //Resets aniIndex and timeElapsed
             if (aniIndex > 7)
             {
                 aniIndex = 0;
                 timeElapsed = 0;
             }
 
+            //Gives direction to the worker
             float radians = (float)Math.Atan2(position.Y - waypoint.Y, position.X - waypoint.X);
             float degrees = MathHelper.ToDegrees(radians);
 
+            //Loads different sprites depending on direction
             if (degrees == 0)
             {
                 sprite = GameWorld.ContentManager.Load<Texture2D>("standing");
@@ -212,7 +220,7 @@ namespace Scrap_Threats
             }
 
 
-
+            //Draws the worker
             if (GameWorld.selectedUnit.Contains(this) && (gatheringFood == false && gatheringScrap == false))
             {
                 spriteBatch.Draw(sprite, Position, null, Color.Green, rotation, new Vector2(sprite.Width * 0.5f, sprite.Height * 0.5f), 1f, SpriteEffects.None, 0.1f);
