@@ -41,24 +41,27 @@ namespace Scrap_Threats
                     cooldownStart = GameWorld.elapsedTime;
                 }
                 cooldown = GameWorld.elapsedTime - cooldownStart;
-                if (GameWorld.raiders.Count > 0)
+                if (GameWorld.raiders.Count > 0 && target == null)
                 {
-                    try
-                    {
-                        foreach (var item in GameWorld.raiders)
-                        {
-                            distance = Vector2.Distance(GameWorld.stockpile.Position, item.Position);
-                            if (distance < targetDistance)
-                            {
-                                targetDistance = distance;
-                                target = item;
-                            }
-                        }
-                    }
-                    catch (Exception)
-                    {
+                    //try
+                    //{
+                        target = (GameWorld.raiders[GameWorld.rng.Next(0, GameWorld.raiders.Count)]);
+
+                        //foreach (var item in GameWorld.raiders)
+                        //{
+                            
+                        //    //distance = Vector2.Distance(GameWorld.stockpile.Position, item.Position);
+                        //    //if (distance < targetDistance)
+                        //    //{
+                        //    //    targetDistance = distance;
+                        //    //    target = item;
+                        //    //}
+                        //}
+                    //}
+                    //catch (Exception)
+                    //{
                         
-                    }
+                    //}
                     
                 }
 
@@ -80,9 +83,12 @@ namespace Scrap_Threats
                             cooldown = 0;
                             cooldownStart = 0;
                         }
-
                     }
 
+                    if (target.health <= 0)
+                    {
+                        target = null;
+                    }
                 }
                 Thread.Sleep(1);
             }

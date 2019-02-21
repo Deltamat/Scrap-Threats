@@ -44,18 +44,17 @@ namespace Scrap_Threats
                         GameWorld.activeWorkers[deadWorker].alive = false;
                         GameWorld.deadWorkers.Add(GameWorld.activeWorkers[deadWorker]);
                         health = 0;
+                        lock (Worker.lockObject)
+                        {
+                            GameWorld.food -= 10;
+                            GameWorld.scrap -= 10;
+                        }
                     }
                 }
 
                 if (health <= 0)
                 {
                     GameWorld.raiders.Remove(this);
-                    lock (Worker.lockObject)
-                    {
-                        GameWorld.food -= 10;
-                        GameWorld.scrap -= 10;
-                    }
-
                     break;
                 }
                 Thread.Sleep(1);
