@@ -20,8 +20,8 @@ namespace Scrap_Threats
         public static double elapsedTime;
         private double foodUpkeepTimer;
         public static int foodUpkeep;
-        public static int food = 1000;
-        public static int scrap = 1000;
+        public static int food = 50;
+        public static int scrap = 50;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         private List<GameObject> userInterfaceObjects;
@@ -90,7 +90,7 @@ namespace Scrap_Threats
         {
             GameTime gameTime = new GameTime();
             IsMouseVisible = true;
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 3; i++)
             {
                 worker = new Worker(new Vector2(rng.Next(100, 1800), rng.Next(100, 900)), "test");
                 activeWorkers.Add(worker);
@@ -134,12 +134,17 @@ namespace Scrap_Threats
             {
                 TextForButton = "Upgr. Scrapyard Cap.",
             };
+            var buyGuardButton = new Button(content.Load<Texture2D>("Button"), content.Load<SpriteFont>("Font"), new Vector2((int)(ScreenSize.Width), (int)(ScreenSize.Height * 1.9)), "Button")
+            {
+                TextForButton = "Buy Guard",
+            };
 
             //sets the click event for the Button
             buyWorkerButton.Click += BuyWorkerButtonClickEvent;
             upgradeFarmAmountButton.Click += UpgradeFarmAmountButtonClickEvent;
             upgradeFarmCapacityButton.Click += UpgradeFarmCapacityButtonClickEvent;
             upgradeScrapyardCapacityButton.Click += UpgradeScrapyardCapacityButtonClickEvent;
+            buyGuardButton.Click += BuyGuardButtonClickEvent;
 
             userInterfaceObjects = new List<GameObject>()
             {
@@ -147,7 +152,7 @@ namespace Scrap_Threats
                 upgradeFarmAmountButton,
                 upgradeFarmCapacityButton,
                 upgradeScrapyardCapacityButton,
-                //insertNewButtonName,
+                buyGuardButton,
             };
 
             background = Content.Load<Texture2D>("background");
@@ -165,7 +170,10 @@ namespace Scrap_Threats
             if (food >= 50)
             {
                 activeWorkers.Add(new Worker(new Vector2((int)(ScreenSize.Width * 0.5), (int)(ScreenSize.Height * 0.5)), "test"));
-                food -= 50;
+                lock (Worker.lockObject)
+                {
+                    food -= 50;
+                }                
             }
         }
 
@@ -174,7 +182,10 @@ namespace Scrap_Threats
             if (scrap >= 100)
             {
                 farm.growthAmount += 50;
-                scrap -= 100;
+                lock (Worker.lockObject)
+                {
+                    scrap -= 100;
+                }                
             }
         }
 
@@ -195,7 +206,11 @@ namespace Scrap_Threats
                 }
                 farmCapacity++;
                 Farm.FarmingSemaphore = new Semaphore(farmCapacity, farmCapacity);
-                scrap -= 250;
+                lock (Worker.lockObject)
+                {
+                    scrap -= 250;
+                }
+             
             }
         }
 
@@ -216,7 +231,25 @@ namespace Scrap_Threats
                 }
                 scrapyardCapacity++;
                 Scrapyard.MiningSemaphore = new Semaphore(scrapyardCapacity, scrapyardCapacity);
-                scrap -= 250;
+                lock (Worker.lockObject)
+                {
+                    scrap -= 250;
+                }
+
+            }
+        }
+
+        private void BuyGuardButtonClickEvent(object sender, EventArgs e)
+        {
+            if (food >= 10 && scrap >= 25)
+            {
+                guards.Add(new Guard(new Vector2((int)(ScreenSize.Width * 0.5), (int)(ScreenSize.Height * 0.5)), "test"));
+                deadWorkers.Add(activeWorkers[rng.Next(0,activeWorkers.Count)]);
+                lock (Worker.lockObject)
+                {
+                food -= 10;
+                scrap -= 25;
+                }
             }
         }
 
@@ -454,9 +487,10 @@ namespace Scrap_Threats
             //    button.Draw(spriteBatch);
             //    DrawCollisionBox(button);
             //}
-
+            
             spriteBatch.DrawString(font, $"Scrap: {scrap}", new Vector2(10), Color.White);
             spriteBatch.DrawString(font, $"Food: {food}", new Vector2(10, 30), Color.White);
+            spriteBatch.DrawString(font, $"Upkeep timer: {(int)(60-foodUpkeepTimer)}", new Vector2(10, 50), Color.White);
             //spriteBatch.Draw(stockpile.Sprite, mouseClickRectangle, Color.Green);
             int workersInScrap = 0;
             int workersInFood = 0;
